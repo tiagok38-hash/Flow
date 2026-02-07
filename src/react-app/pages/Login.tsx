@@ -83,7 +83,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-cyan-200 via-emerald-300 to-green-600 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-b from-green-300 via-green-100 to-white flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
         <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100/50 p-8">
 
