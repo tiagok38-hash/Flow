@@ -8,6 +8,7 @@ import FilterChips from '@/react-app/components/FilterChips';
 import Icon from '@/react-app/components/Icon';
 import EditLancamentoModal from '@/react-app/components/EditLancamentoModal';
 import UserMenu from '@/react-app/components/UserMenu';
+import ConfirmModal from '@/react-app/components/ConfirmModal';
 
 export default function Dashboard() {
   const [periodo, setPeriodo] = useState('mes-atual');
@@ -15,6 +16,10 @@ export default function Dashboard() {
   const [editingLancamento, setEditingLancamento] = useState<any>(null);
   const [lancamentosExpandidos, setLancamentosExpandidos] = useState(false);
   const { valoresVisiveis } = useValoresVisiveis();
+
+  // Confirmação de exclusão
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [lancamentoToDelete, setLancamentoToDelete] = useState<any>(null);
 
   const { data: stats, loading: loadingStats, refetch: refetchStats } = useDashboardStats(periodo);
   const { data: gastosPorCategoria, loading: loadingGastos, refetch: refetchGastos } = useGastosPorCategoria(periodo);
@@ -32,16 +37,23 @@ export default function Dashboard() {
     setEditModalOpen(true);
   };
 
-  const handleDeleteLancamento = async (lancamentoId: string) => {
-    if (confirm('Tem certeza que deseja excluir este lançamento?')) {
-      try {
-        await excluirLancamento(lancamentoId);
-        // O refetch acontece automaticamente pois os hooks escutam o evento
-      } catch (error) {
-        console.error('Erro ao excluir lançamento:', error);
-        alert('Erro ao excluir lançamento');
-      }
+  const handleConfirmDelete = async () => {
+    if (!lancamentoToDelete) return;
+    try {
+      await excluirLancamento(lancamentoToDelete.id);
+      // O refetch acontece automaticamente pois os hooks escutam o evento
+    } catch (error: any) {
+      console.error('Erro ao excluir lançamento:', error);
+      alert('Erro ao excluir lançamento: ' + (error.message || 'Erro desconhecido'));
+    } finally {
+      setConfirmModalOpen(false);
+      setLancamentoToDelete(null);
     }
+  };
+
+  const handleDeleteClick = (lancamento: any) => {
+    setLancamentoToDelete(lancamento);
+    setConfirmModalOpen(true);
   };
 
   return (
@@ -185,7 +197,7 @@ export default function Dashboard() {
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteLancamento(lancamento.id);
+                                    handleDeleteClick(lancamento);
                                   }}
                                   className="p-1 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded transition-colors"
                                   title="Excluir"
@@ -237,7 +249,7 @@ export default function Dashboard() {
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      handleDeleteLancamento(lancamento.id);
+                                      handleDeleteClick(lancamento);
                                     }}
                                     className="p-1 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded transition-colors"
                                     title="Excluir"
@@ -327,7 +339,7 @@ export default function Dashboard() {
                   <div className="p-4 rounded-2xl bg-gray-100/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <TrendingDown className="text-gray-400" size={24} />
                   </div>
-                  <p className="text-gray-500 font-light">Nenhum gasto encontrado no período selecionado</p>
+                  <p className="text-gray-500 font-light">Nenhum gasto aconteceu no período selecionado</p>
                 </div>
               )}
             </Card>
@@ -369,6 +381,20 @@ export default function Dashboard() {
         }}
         onSuccess={handleSuccess}
         lancamento={editingLancamento}
+      />
+
+      {/* Modal de confirmação de exclusão */}
+      <ConfirmModal
+        isOpen={confirmModalOpen}
+        onClose={() => {
+          setConfirmModalOpen(false);
+          setLancamentoToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Excluir Lançamento"
+        message={`Tem certeza que deseja excluir o lançamento "${lancamentoToDelete?.descricao}"?`}
+        confirmText="Excluir"
+        isDestructive
       />
     </div>
   );

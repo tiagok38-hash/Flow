@@ -6,6 +6,7 @@ import Card from '@/react-app/components/Card';
 import FilterChips from '@/react-app/components/FilterChips';
 import Icon from '@/react-app/components/Icon';
 import EditLancamentoModal from '@/react-app/components/EditLancamentoModal';
+import ConfirmModal from '@/react-app/components/ConfirmModal';
 
 export default function Historico() {
   const [searchParams] = useSearchParams();
@@ -14,6 +15,10 @@ export default function Historico() {
   const [editingLancamento, setEditingLancamento] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'despesas' | 'receitas'>('todos');
+
+  // Confirmação de exclusão
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [lancamentoToDelete, setLancamentoToDelete] = useState<any>(null);
 
   const { data: lancamentos, loading } = useLancamentos(periodo);
 
@@ -60,16 +65,23 @@ export default function Historico() {
     setEditModalOpen(true);
   };
 
-  const handleDeleteLancamento = async (lancamentoId: string) => {
-    if (confirm('Tem certeza que deseja excluir este lançamento?')) {
-      try {
-        await excluirLancamento(lancamentoId);
-        // Não precisa de reload pois o hook useLancamentos escuta alterações
-      } catch (error) {
-        console.error('Erro ao excluir lançamento:', error);
-        alert('Erro ao excluir lançamento');
-      }
+  const handleConfirmDelete = async () => {
+    if (!lancamentoToDelete) return;
+    try {
+      await excluirLancamento(lancamentoToDelete.id);
+      // Não precisa de reload pois o hook useLancamentos escuta alterações
+    } catch (error: any) {
+      console.error('Erro ao excluir lançamento:', error);
+      alert('Erro ao excluir lançamento: ' + (error.message || 'Erro desconhecido'));
+    } finally {
+      setConfirmModalOpen(false);
+      setLancamentoToDelete(null);
     }
+  };
+
+  const handleDeleteClick = (lancamento: any) => {
+    setLancamentoToDelete(lancamento);
+    setConfirmModalOpen(true);
   };
 
   const handleSuccess = () => {
@@ -79,8 +91,6 @@ export default function Historico() {
   const getStatusColor = (status: string) => {
     return status === 'pago' ? 'bg-teal-100 text-teal-700' : 'bg-orange-100 text-orange-700';
   };
-
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-emerald-50 pb-32">
@@ -106,8 +116,8 @@ export default function Historico() {
             <button
               onClick={() => setFiltroTipo('todos')}
               className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'todos'
-                ? 'bg-white text-gray-700 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                  ? 'bg-white text-gray-700 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
             >
               Todos
@@ -115,8 +125,8 @@ export default function Historico() {
             <button
               onClick={() => setFiltroTipo('despesas')}
               className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'despesas'
-                ? 'bg-gradient-to-r from-orange-400 to-red-400 text-white shadow-lg shadow-orange-500/25'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                  ? 'bg-gradient-to-r from-orange-400 to-red-400 text-white shadow-lg shadow-orange-500/25'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
             >
               Despesas
@@ -124,8 +134,8 @@ export default function Historico() {
             <button
               onClick={() => setFiltroTipo('receitas')}
               className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'receitas'
-                ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                  ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
             >
               Receitas
@@ -237,7 +247,7 @@ export default function Historico() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleDeleteLancamento(lancamento.id);
+                              handleDeleteClick(lancamento);
                             }}
                             className="p-1.5 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
                             title="Excluir"
@@ -279,6 +289,20 @@ export default function Historico() {
         }}
         onSuccess={handleSuccess}
         lancamento={editingLancamento}
+      />
+
+      {/* Modal de confirmação de exclusão */}
+      <ConfirmModal
+        isOpen={confirmModalOpen}
+        onClose={() => {
+          setConfirmModalOpen(false);
+          setLancamentoToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Excluir Lançamento"
+        message={`Tem certeza que deseja excluir o lançamento "${lancamentoToDelete?.descricao}"?`}
+        confirmText="Excluir"
+        isDestructive
       />
     </div>
   );
