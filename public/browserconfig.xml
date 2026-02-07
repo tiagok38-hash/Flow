@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square70x70logo src="https://mocha-cdn.com/0199415b-a577-7e0a-8fa3-4402674c843b/new-favicon.png"/>
+            <square150x150logo src="https://mocha-cdn.com/0199415b-a577-7e0a-8fa3-4402674c843b/new-favicon.png"/>
+            <square310x310logo src="https://mocha-cdn.com/0199415b-a577-7e0a-8fa3-4402674c843b/new-favicon.png"/>
+            <TileColor>#14b8a6</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>

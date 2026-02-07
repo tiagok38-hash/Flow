@@ -1,0 +1,1 @@
+ALTER TABLE cartoes ADD COLUMN cor TEXT DEFAULT 'azul';

@@ -1,0 +1,26 @@
+{
+  "name": "Flow",
+  "short_name": "Flow",
+  "description": "Controle financeiro inteligente e minimalista",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0fdfa",
+  "theme_color": "#14b8a6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://mocha-cdn.com/0199415b-a577-7e0a-8fa3-4402674c843b/new-favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "https://mocha-cdn.com/0199415b-a577-7e0a-8fa3-4402674c843b/new-favicon.png",
+      "sizes": "512x512", 
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["finance", "productivity", "business"],
+  "lang": "pt-BR"
+}

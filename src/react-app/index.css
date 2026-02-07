@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  
+  body {
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(135deg, #f0fdf9 0%, #f0fdfa 50%, #ecfef3 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    /* Prevent scroll issues on iOS Safari */
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  /* Remove spinner buttons from number inputs */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+/* Hide scrollbars */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Ensure fixed positioning works correctly on all devices */
+.fixed-top-ui {
+  position: fixed !important;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+  z-index: 9999 !important;
+}
+
+/* Prevent scroll issues with fixed elements on iOS Safari */
+@supports (-webkit-overflow-scrolling: touch) {
+  .fixed-top-ui {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 1rem;
+    right: 1rem;
+  }
+}
