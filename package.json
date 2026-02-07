@@ -6,7 +6,6 @@
   "dependencies": {
     "@hono/zod-validator": "^0.5.0",
     "@supabase/supabase-js": "^2.95.3",
-    "@types/react-datepicker": "^7.0.0",
     "hono": "^4.11.8",
     "lucide-react": "^0.510.0",
     "react": "19.0.0",
