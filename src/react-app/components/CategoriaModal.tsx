@@ -8,7 +8,7 @@ import { useCurrencyFormat } from '@/react-app/hooks/useCurrencyFormat';
 interface CategoriaModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (categoria?: any) => void;
   categoria?: any;
 }
 
@@ -62,10 +62,11 @@ export default function CategoriaModal({
         limite_mensal: formData.limite_mensal ? parseCurrency(formData.limite_mensal) : null,
       };
 
+      let result;
       if (categoria) {
-        await atualizarCategoria(categoria.id, data);
+        result = await atualizarCategoria(categoria.id, data);
       } else {
-        await criarCategoria(data);
+        result = await criarCategoria(data);
       }
 
       setFormData({
@@ -73,7 +74,7 @@ export default function CategoriaModal({
         icone: 'circle',
         limite_mensal: '',
       });
-      onSuccess();
+      onSuccess(result);
       onClose();
     } catch (error) {
       console.error('Erro ao salvar categoria:', error);
@@ -118,8 +119,8 @@ export default function CategoriaModal({
                 type="button"
                 onClick={() => setFormData({ ...formData, icone })}
                 className={`p-2.5 rounded-xl border-2 transition-all duration-200 hover:scale-105 flex items-center justify-center ${formData.icone === icone
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-300/70 hover:border-gray-400'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300/70 hover:border-gray-400'
                   }`}
               >
                 <Icon name={icone} size={18} className="text-gray-600" />

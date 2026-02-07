@@ -143,9 +143,12 @@ export default function LancamentoFixoModal({
     }
   };
 
-  const handleCategoriaSuccess = () => {
+  const handleCategoriaSuccess = (novaCategoria?: any) => {
     refetchCategorias();
     setCategoriaModalOpen(false);
+    if (novaCategoria && novaCategoria.id) {
+      setFormData(prev => ({ ...prev, categoria_id: novaCategoria.id }));
+    }
   };
 
   const renderConfiguracaoPeriodo = () => {
