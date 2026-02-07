@@ -173,14 +173,20 @@ export default function Dashboard() {
                               </p>
                               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button
-                                  onClick={() => handleEditLancamento(lancamento)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditLancamento(lancamento);
+                                  }}
                                   className="p-1 text-gray-400 hover:text-teal-500 hover:bg-teal-50 rounded transition-colors"
                                   title="Editar"
                                 >
                                   <Edit size={12} />
                                 </button>
                                 <button
-                                  onClick={() => handleDeleteLancamento(lancamento.id)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteLancamento(lancamento.id);
+                                  }}
                                   className="p-1 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded transition-colors"
                                   title="Excluir"
                                 >
@@ -219,14 +225,20 @@ export default function Dashboard() {
                               <div className="flex items-center gap-2 flex-shrink-0">
                                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                   <button
-                                    onClick={() => handleEditLancamento(lancamento)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleEditLancamento(lancamento);
+                                    }}
                                     className="p-1 text-gray-400 hover:text-teal-500 hover:bg-teal-50 rounded transition-colors"
                                     title="Editar"
                                   >
                                     <Edit size={12} />
                                   </button>
                                   <button
-                                    onClick={() => handleDeleteLancamento(lancamento.id)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteLancamento(lancamento.id);
+                                    }}
                                     className="p-1 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded transition-colors"
                                     title="Excluir"
                                   >

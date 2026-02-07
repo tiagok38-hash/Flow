@@ -106,8 +106,8 @@ export default function Historico() {
             <button
               onClick={() => setFiltroTipo('todos')}
               className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'todos'
-                  ? 'bg-white text-gray-700 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                ? 'bg-white text-gray-700 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
             >
               Todos
@@ -115,8 +115,8 @@ export default function Historico() {
             <button
               onClick={() => setFiltroTipo('despesas')}
               className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'despesas'
-                  ? 'bg-gradient-to-r from-orange-400 to-red-400 text-white shadow-lg shadow-orange-500/25'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                ? 'bg-gradient-to-r from-orange-400 to-red-400 text-white shadow-lg shadow-orange-500/25'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
             >
               Despesas
@@ -124,8 +124,8 @@ export default function Historico() {
             <button
               onClick={() => setFiltroTipo('receitas')}
               className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'receitas'
-                  ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
             >
               Receitas
@@ -225,14 +225,20 @@ export default function Historico() {
                         {/* Ações */}
                         <div className="flex gap-1 opacity-70 group-hover:opacity-100 transition-opacity duration-200">
                           <button
-                            onClick={() => handleEditLancamento(lancamento)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditLancamento(lancamento);
+                            }}
                             className="p-1.5 text-gray-400 hover:text-teal-500 hover:bg-teal-50 rounded-lg transition-colors"
                             title="Editar"
                           >
                             <Edit size={12} />
                           </button>
                           <button
-                            onClick={() => handleDeleteLancamento(lancamento.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteLancamento(lancamento.id);
+                            }}
                             className="p-1.5 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
                             title="Excluir"
                           >
