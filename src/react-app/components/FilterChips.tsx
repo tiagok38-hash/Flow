@@ -53,24 +53,22 @@ export default function FilterChips({ selectedPeriodo, onPeriodoChange }: Filter
           <button
             key={periodo.key}
             onClick={() => onPeriodoChange(periodo.key)}
-            className={`px-4 py-2 rounded-2xl text-sm font-light transition-all duration-200 hover:scale-105 whitespace-nowrap ${
-              selectedPeriodo === periodo.key
+            className={`flex-1 px-4 py-2 rounded-2xl text-sm font-light transition-all duration-200 hover:scale-105 whitespace-nowrap flex justify-center items-center ${selectedPeriodo === periodo.key
                 ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
                 : 'bg-white/60 text-gray-600 hover:bg-white hover:shadow-md border border-gray-300/70'
-            }`}
+              }`}
           >
             {periodo.label}
           </button>
         ))}
-        
+
         {/* Ícone de calendário clicável - sempre visível */}
         <button
           onClick={() => setShowDatePicker(true)}
-          className={`p-2 rounded-2xl transition-all duration-200 hover:scale-105 flex items-center justify-center ${
-            isCustomPeriod
+          className={`p-2 rounded-2xl transition-all duration-200 hover:scale-105 flex items-center justify-center ${isCustomPeriod
               ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
               : 'bg-white/60 text-gray-600 hover:bg-white hover:shadow-md border border-gray-300/70'
-          }`}
+            }`}
           title="Selecionar período personalizado"
         >
           <Calendar size={16} />
@@ -80,7 +78,7 @@ export default function FilterChips({ selectedPeriodo, onPeriodoChange }: Filter
       {/* Date Picker Modal */}
       {showDatePicker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
+          <div
             className="fixed inset-0 bg-black bg-opacity-50 animate-fade-in"
             onClick={handleCancelDateRange}
           />
@@ -117,7 +115,7 @@ export default function FilterChips({ selectedPeriodo, onPeriodoChange }: Filter
           </div>
         </div>
       )}
-      
+
       {/* Custom DatePicker Styles */}
       <style>{`
         .datepicker-custom .react-datepicker {
