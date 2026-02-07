@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '@/react-app/supabaseClient';
-import { Categoria, Lancamento, NovoLancamento, GastoPorCategoria } from '@/shared/types';
+import { Categoria, Lancamento, NovoLancamento, GastoPorCategoria, DashboardStats } from '@/shared/types';
 import { useSupabaseQuery } from './useSupabaseQuery';
 
 // --- Helpers de Data ---
@@ -118,7 +118,7 @@ export function useLancamentos(periodo: string = 'mes-atual') {
 export function useDashboardStats(periodo: string = 'mes-atual') {
   const { data: lancamentos, loading, refetch } = useLancamentos(periodo);
 
-  const stats = useMemo(() => {
+  const stats = useMemo<DashboardStats | null>(() => {
     if (!lancamentos) return null;
 
     let totalReceitas = 0;
