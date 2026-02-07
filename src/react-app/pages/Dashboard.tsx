@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TrendingUp, TrendingDown, Clock, Edit, Trash2, Home } from 'lucide-react';
 import { Link } from 'react-router';
-import { useDashboardStats, useGastosPorCategoria, useLancamentos, formatarMoeda, formatarData } from '@/react-app/hooks/useApi';
+import { useDashboardStats, useGastosPorCategoria, useLancamentos, formatarMoeda, formatarData, excluirLancamento } from '@/react-app/hooks/useApi';
 import { useValoresVisiveis } from '@/react-app/hooks/useValoresVisiveis';
 import Card from '@/react-app/components/Card';
 import FilterChips from '@/react-app/components/FilterChips';
@@ -35,16 +35,11 @@ export default function Dashboard() {
   const handleDeleteLancamento = async (lancamentoId: string) => {
     if (confirm('Tem certeza que deseja excluir este lançamento?')) {
       try {
-        await fetch(`/api/lancamentos/${lancamentoId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-        });
-        // Refetch dados em vez de recarregar
-        refetchStats();
-        refetchGastos();
-        refetchRecentes();
+        await excluirLancamento(lancamentoId);
+        // O refetch acontece automaticamente pois os hooks escutam o evento
       } catch (error) {
         console.error('Erro ao excluir lançamento:', error);
+        alert('Erro ao excluir lançamento');
       }
     }
   };

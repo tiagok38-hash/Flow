@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { History, Edit, Trash2, Filter, Search } from 'lucide-react';
 import { useSearchParams } from 'react-router';
-import { useLancamentos, formatarMoeda, formatarData } from '@/react-app/hooks/useApi';
+import { useLancamentos, formatarMoeda, formatarData, excluirLancamento } from '@/react-app/hooks/useApi';
 import Card from '@/react-app/components/Card';
 import FilterChips from '@/react-app/components/FilterChips';
 import Icon from '@/react-app/components/Icon';
@@ -14,7 +14,7 @@ export default function Historico() {
   const [editingLancamento, setEditingLancamento] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'despesas' | 'receitas'>('todos');
-  
+
   const { data: lancamentos, loading } = useLancamentos(periodo);
 
   // Verificar filtro inicial da URL
@@ -29,29 +29,29 @@ export default function Historico() {
 
   // Para busca - buscar em todos os lançamentos independente do período
   const { data: todosLancamentos } = useLancamentos('ano');
-  
+
   // Filtrar lançamentos pela busca e tipo
   const lancamentosFiltrados = useMemo(() => {
     // Se há busca, usar todos os lançamentos, senão usar os do período selecionado
     let resultado = searchTerm.trim() ? (todosLancamentos || []) : (lancamentos || []);
-    
+
     // Filtrar por tipo
     if (filtroTipo === 'despesas') {
       resultado = resultado.filter(lancamento => lancamento.tipo === 'despesa');
     } else if (filtroTipo === 'receitas') {
       resultado = resultado.filter(lancamento => lancamento.tipo === 'receita');
     }
-    
+
     // Filtrar por busca
     if (searchTerm.trim()) {
       const termoBusca = searchTerm.toLowerCase();
-      resultado = resultado.filter(lancamento => 
+      resultado = resultado.filter(lancamento =>
         lancamento.descricao?.toLowerCase().includes(termoBusca) ||
         lancamento.categoria_nome?.toLowerCase().includes(termoBusca) ||
         lancamento.forma_pagamento?.toLowerCase().includes(termoBusca)
       );
     }
-    
+
     return resultado;
   }, [lancamentos, todosLancamentos, searchTerm, filtroTipo]);
 
@@ -63,13 +63,11 @@ export default function Historico() {
   const handleDeleteLancamento = async (lancamentoId: string) => {
     if (confirm('Tem certeza que deseja excluir este lançamento?')) {
       try {
-        await fetch(`/api/lancamentos/${lancamentoId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-        });
-        window.location.reload();
+        await excluirLancamento(lancamentoId);
+        // Não precisa de reload pois o hook useLancamentos escuta alterações
       } catch (error) {
         console.error('Erro ao excluir lançamento:', error);
+        alert('Erro ao excluir lançamento');
       }
     }
   };
@@ -82,7 +80,7 @@ export default function Historico() {
     return status === 'pago' ? 'bg-teal-100 text-teal-700' : 'bg-orange-100 text-orange-700';
   };
 
-  
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-emerald-50 pb-32">
@@ -100,43 +98,40 @@ export default function Historico() {
 
         {/* Filtros */}
         <FilterChips selectedPeriodo={periodo} onPeriodoChange={setPeriodo} />
-        
+
         {/* Filtros de tipo e busca */}
         <div className="mb-6 space-y-3">
           {/* Filtro de tipo */}
           <div className="flex bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-1.5 shadow-inner w-full max-w-md">
             <button
               onClick={() => setFiltroTipo('todos')}
-              className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${
-                filtroTipo === 'todos'
+              className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'todos'
                   ? 'bg-white text-gray-700 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-              }`}
+                }`}
             >
               Todos
             </button>
             <button
               onClick={() => setFiltroTipo('despesas')}
-              className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${
-                filtroTipo === 'despesas'
+              className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'despesas'
                   ? 'bg-gradient-to-r from-orange-400 to-red-400 text-white shadow-lg shadow-orange-500/25'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-              }`}
+                }`}
             >
               Despesas
             </button>
             <button
               onClick={() => setFiltroTipo('receitas')}
-              className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${
-                filtroTipo === 'receitas'
+              className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'receitas'
                   ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-              }`}
+                }`}
             >
               Receitas
             </button>
           </div>
-          
+
           {/* Barra de busca */}
           <div className="relative w-full max-w-md">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -159,9 +154,9 @@ export default function Historico() {
               <Filter className="text-gray-600" size={20} />
             </div>
             <h3 className="text-xl font-light text-gray-900">
-              {filtroTipo === 'despesas' ? 'Despesas' : 
-               filtroTipo === 'receitas' ? 'Receitas' : 
-               'Lançamentos do período'}
+              {filtroTipo === 'despesas' ? 'Despesas' :
+                filtroTipo === 'receitas' ? 'Receitas' :
+                  'Lançamentos do período'}
             </h3>
           </div>
 
@@ -172,21 +167,21 @@ export default function Historico() {
           ) : lancamentosFiltrados && lancamentosFiltrados.length > 0 ? (
             <div className="space-y-3">
               {lancamentosFiltrados.map((lancamento, index) => (
-                <div 
-                  key={lancamento.id} 
+                <div
+                  key={lancamento.id}
                   className="group p-3 sm:p-4 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-400/30 hover:shadow-xl hover:shadow-gray-500/40 transition-all duration-200 hover:scale-[1.01] animate-slide-up"
                   style={{ animationDelay: `${index * 30}ms` }}
                 >
                   <div className="flex items-center gap-3">
                     {/* Ícone da categoria */}
                     <div className="p-2 bg-gray-50 rounded-xl flex-shrink-0">
-                      <Icon 
-                        name={lancamento.categoria_icone || 'circle'} 
-                        size={18} 
-                        className="text-gray-600" 
+                      <Icon
+                        name={lancamento.categoria_icone || 'circle'}
+                        size={18}
+                        className="text-gray-600"
                       />
                     </div>
-                    
+
                     {/* Conteúdo principal */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-4 mb-2">
@@ -207,7 +202,7 @@ export default function Historico() {
                             </span>
                           </div>
                         </div>
-                        
+
                         {/* Valor destacado */}
                         <div className="text-right flex-shrink-0">
                           <p className={`text-lg font-semibold ${lancamento.tipo === 'receita' ? 'text-teal-500' : 'text-orange-500'}`}>
@@ -216,7 +211,7 @@ export default function Historico() {
                           </p>
                         </div>
                       </div>
-                      
+
                       {/* Linha 2: Detalhes e Ações */}
                       <div className="flex items-center justify-between">
                         <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 font-light">
@@ -226,7 +221,7 @@ export default function Historico() {
                           <span className="text-gray-300">•</span>
                           <span>{lancamento.forma_pagamento}</span>
                         </div>
-                        
+
                         {/* Ações */}
                         <div className="flex gap-1 opacity-70 group-hover:opacity-100 transition-opacity duration-200">
                           <button
@@ -259,7 +254,7 @@ export default function Historico() {
                 {searchTerm ? 'Nenhum resultado encontrado' : 'Nenhum lançamento encontrado'}
               </h3>
               <p className="text-gray-500 font-light text-sm sm:text-base">
-                {searchTerm 
+                {searchTerm
                   ? `Nenhum lançamento corresponde à busca "${searchTerm}"`
                   : 'Nenhuma transação foi encontrada no período selecionado'
                 }
