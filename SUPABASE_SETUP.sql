@@ -159,3 +159,26 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute procedure public.handle_new_user();
+
+
+-- 7. Storage: Criar bucket para avatares
+insert into storage.buckets (id, name, public)
+values ('avatars', 'avatars', true)
+on conflict (id) do nothing;
+
+-- Políticas de Storage (RLS)
+create policy "Avatar images are publicly accessible"
+  on storage.objects for select
+  using ( bucket_id = 'avatars' );
+
+create policy "Anyone can upload an avatar"
+  on storage.objects for insert
+  with check ( bucket_id = 'avatars' and auth.uid() = owner );
+
+create policy "Anyone can update their own avatar"
+  on storage.objects for update
+  using ( bucket_id = 'avatars' and auth.uid() = owner );
+
+create policy "Anyone can delete their own avatar"
+  on storage.objects for delete
+  using ( bucket_id = 'avatars' and auth.uid() = owner );
