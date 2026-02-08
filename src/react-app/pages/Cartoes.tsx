@@ -445,9 +445,9 @@ export default function Cartoes() {
 
                       {/* Indicador de toque no mobile */}
                       {!isExpanded && (
-                        <div className="absolute bottom-2 left-0 right-0 pointer-events-none flex flex-col items-center gap-0">
+                        <div className="absolute bottom-2 left-0 right-0 pointer-events-none flex flex-col items-center gap-0.5">
                           <p className="text-[9px] sm:text-xs text-gray-400 font-light uppercase tracking-widest">Toque para ver opções</p>
-                          <ChevronDown size={14} className="text-gray-400 animate-bounce -mt-1" />
+                          <ChevronDown size={14} className="text-gray-400 animate-bounce" />
                         </div>
                       )}
                     </div>
