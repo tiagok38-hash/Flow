@@ -160,6 +160,7 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
     const gastosPorCategoria: Record<string, number> = {};
     const nomesCategorias: Record<string, string> = {};
     const iconesCategorias: Record<string, string> = {};
+    const receitasPorCategoria: Record<string, number> = {};
 
     lancamentos.forEach(l => {
       if (l.tipo === 'receita') {
@@ -173,16 +174,37 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
           nomesCategorias[l.categoria_id] = l.categoria_nome || 'Sem Categoria';
           iconesCategorias[l.categoria_id] = l.categoria_icone || 'circle';
         }
+      } else if (l.tipo === 'receita') {
+        const val = Math.abs(Number(l.valor));
+        if (l.categoria_id) {
+          receitasPorCategoria[l.categoria_id] = (receitasPorCategoria[l.categoria_id] || 0) + val;
+          nomesCategorias[l.categoria_id] = l.categoria_nome || 'Sem Categoria';
+          iconesCategorias[l.categoria_id] = l.categoria_icone || 'circle';
+        }
       }
     });
 
     let maiorGasto = null;
-    let maiorValor = -1;
+    let maiorValorGasto = -1;
 
     Object.entries(gastosPorCategoria).forEach(([id, valor]) => {
-      if (valor > maiorValor) {
-        maiorValor = valor;
+      if (valor > maiorValorGasto) {
+        maiorValorGasto = valor;
         maiorGasto = {
+          nome: nomesCategorias[id],
+          valor,
+          icone: iconesCategorias[id]
+        };
+      }
+    });
+
+    let maiorReceita = null;
+    let maiorValorReceita = -1;
+
+    Object.entries(receitasPorCategoria).forEach(([id, valor]) => {
+      if (valor > maiorValorReceita) {
+        maiorValorReceita = valor;
+        maiorReceita = {
           nome: nomesCategorias[id],
           valor,
           icone: iconesCategorias[id]
@@ -194,7 +216,8 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
       saldo_periodo: totalReceitas - totalDespesas,
       total_receitas: totalReceitas,
       total_despesas: totalDespesas,
-      categoria_mais_gasta: maiorGasto
+      categoria_mais_gasta: maiorGasto,
+      categoria_maior_receita: maiorReceita
     };
   }, [lancamentos]);
 
@@ -227,6 +250,34 @@ export function useGastosPorCategoria(periodo: string = 'mes-atual') {
   }, [lancamentos]);
 
   return { data: gastos, loading, error: null, refetch };
+}
+
+export function useReceitasPorCategoria(periodo: string = 'mes-atual') {
+  const { data: lancamentos, loading, refetch } = useLancamentos(periodo);
+
+  const receitas = useMemo(() => {
+    if (!lancamentos) return [];
+
+    const agrupado: Record<string, GastoPorCategoria> = {};
+
+    lancamentos.filter(l => l.tipo === 'receita').forEach(l => {
+      if (!l.categoria_id) return;
+
+      if (!agrupado[l.categoria_id]) {
+        agrupado[l.categoria_id] = {
+          categoria_id: l.categoria_id,
+          categoria_nome: l.categoria_nome || 'Desconhecida',
+          categoria_icone: l.categoria_icone || 'circle',
+          total: 0
+        };
+      }
+      agrupado[l.categoria_id].total += Math.abs(Number(l.valor));
+    });
+
+    return Object.values(agrupado).sort((a, b) => b.total - a.total);
+  }, [lancamentos]);
+
+  return { data: receitas, loading, error: null, refetch };
 }
 
 export function useGastosCartoes(periodo: string = 'mes-atual') {

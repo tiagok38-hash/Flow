@@ -9,6 +9,7 @@ import Historico from "@/react-app/pages/Historico";
 import Cartoes from "@/react-app/pages/Cartoes";
 import Configuracoes from "@/react-app/pages/Configuracoes";
 import RankingCategorias from "@/react-app/pages/RankingCategorias";
+import RankingReceitas from "@/react-app/pages/RankingReceitas";
 
 import Login from "@/react-app/pages/Login";
 
@@ -66,6 +67,7 @@ function ProtectedApp() {
               <Route path="/cartoes" element={<Cartoes />} />
               <Route path="/configuracoes" element={<Configuracoes />} />
               <Route path="/ranking-categorias" element={<RankingCategorias />} />
+              <Route path="/ranking-receitas" element={<RankingReceitas />} />
 
               {/* Se logado tentar ir pra login, redireciona pra home */}
               <Route path="/login" element={<Navigate to="/" replace />} />

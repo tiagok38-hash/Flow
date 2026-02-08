@@ -72,6 +72,11 @@ export const DashboardStatsSchema = z.object({
     valor: z.number(),
     icone: z.string().optional(),
   }).nullable(),
+  categoria_maior_receita: z.object({
+    nome: z.string(),
+    valor: z.number(),
+    icone: z.string().optional(),
+  }).nullable(),
 });
 
 export type DashboardStats = z.infer<typeof DashboardStatsSchema>;

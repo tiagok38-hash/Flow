@@ -362,39 +362,75 @@ export default function Dashboard() {
         </div>
 
         {/* Categoria que mais gastou - clicável */}
-        {stats?.categoria_mais_gasta && (
-          <Link to="/ranking-categorias">
-            <Card className="bg-white/90 backdrop-blur-sm shadow-2xl shadow-gray-400/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer transform animate-slide-up-delay-1 mb-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200">
-                  <Trophy className="text-gray-600" size={20} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {stats?.categoria_mais_gasta && (
+            <Link to="/ranking-categorias">
+              <Card className="bg-white/90 backdrop-blur-sm shadow-2xl shadow-gray-400/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer transform animate-slide-up-delay-1 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200">
+                    <Trophy className="text-gray-600" size={20} />
+                  </div>
+                  <h3 className="text-lg font-light text-gray-900">Categoria com maior gasto</h3>
                 </div>
-                <h3 className="text-lg font-light text-gray-900">Categoria com maior gasto</h3>
-              </div>
 
-              <div className="bg-gray-50/70 p-4 rounded-2xl">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-2xl bg-white shadow-sm">
-                    <Icon name={stats.categoria_mais_gasta.icone || 'award'} size={24} className="text-orange-500" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900 leading-tight">
-                      {stats.categoria_mais_gasta.nome}
-                    </p>
-                    <p className="text-base font-medium text-orange-500">
-                      {valoresVisiveis ? formatarMoeda(stats.categoria_mais_gasta.valor) : '••••••'}
-                    </p>
+                <div className="bg-gray-50/70 p-4 rounded-2xl">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-2xl bg-white shadow-sm">
+                      <Icon name={stats.categoria_mais_gasta.icone || 'award'} size={24} className="text-orange-500" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold text-gray-900 leading-tight">
+                        {stats.categoria_mais_gasta.nome}
+                      </p>
+                      <p className="text-base font-medium text-orange-500">
+                        {valoresVisiveis ? formatarMoeda(stats.categoria_mais_gasta.valor) : '••••••'}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-2 flex justify-end">
-                <div className="text-teal-600 font-medium text-xs flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity">
-                  Ver ranking completo →
+                <div className="mt-2 flex justify-end">
+                  <div className="text-teal-600 font-medium text-xs flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity">
+                    Ver ranking completo →
+                  </div>
                 </div>
-              </div>
-            </Card>
-          </Link>
-        )}
+              </Card>
+            </Link>
+          )}
+
+          {stats?.categoria_maior_receita && (
+            <Link to="/ranking-receitas">
+              <Card className="bg-white/90 backdrop-blur-sm shadow-2xl shadow-gray-400/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer transform animate-slide-up-delay-2 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-100/50">
+                    <Trophy className="text-teal-600" size={20} />
+                  </div>
+                  <h3 className="text-lg font-light text-gray-900">Categoria com maior receita</h3>
+                </div>
+
+                <div className="bg-teal-50/30 p-4 rounded-2xl border border-teal-100/20">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-2xl bg-white shadow-sm">
+                      <Icon name={stats.categoria_maior_receita.icone || 'trending-up'} size={24} className="text-teal-600" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold text-gray-900 leading-tight">
+                        {stats.categoria_maior_receita.nome}
+                      </p>
+                      <p className="text-base font-medium text-teal-600">
+                        {valoresVisiveis ? formatarMoeda(stats.categoria_maior_receita.valor) : '••••••'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-2 flex justify-end">
+                  <div className="text-teal-600 font-medium text-xs flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity">
+                    Ver ranking completo →
+                  </div>
+                </div>
+              </Card>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Modal de edição */}
