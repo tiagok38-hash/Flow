@@ -324,7 +324,7 @@ export default function Cartoes() {
                       }`}
                     style={{
                       aspectRatio: '1.58 / 0.75',
-                      minHeight: isExpanded ? '280px' : '200px',
+                      minHeight: isExpanded ? '300px' : '220px',
                       transition: 'all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)'
                     }}
                   >
@@ -445,9 +445,9 @@ export default function Cartoes() {
 
                       {/* Indicador de toque no mobile */}
                       {!isExpanded && (
-                        <div className="absolute bottom-1.5 left-0 right-0 pointer-events-none flex flex-col items-center gap-0">
+                        <div className="absolute bottom-2 left-0 right-0 pointer-events-none flex flex-col items-center gap-0">
                           <p className="text-[9px] sm:text-xs text-gray-400 font-light uppercase tracking-widest">Toque para ver opções</p>
-                          <ChevronDown size={16} className="text-gray-400 animate-bounce -mt-1" />
+                          <ChevronDown size={14} className="text-gray-400 animate-bounce -mt-1" />
                         </div>
                       )}
                     </div>
