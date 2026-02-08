@@ -55,18 +55,21 @@ function ProtectedApp() {
     <ValoresVisiveisProvider>
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-green-50">
         <Navigation />
-        <div className="animate-fade-in transition-all duration-500 ease-in-out">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/historico" element={<Historico />} />
-            <Route path="/cartoes" element={<Cartoes />} />
-            <Route path="/configuracoes" element={<Configuracoes />} />
-            <Route path="/ranking-categorias" element={<RankingCategorias />} />
+        {/* Adiciona padding à esquerda no desktop para compensar a sidebar fixa */}
+        <main className="lg:pl-64 min-h-screen transition-all duration-500 ease-in-out">
+          <div className="animate-fade-in pb-32 lg:pb-8">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/historico" element={<Historico />} />
+              <Route path="/cartoes" element={<Cartoes />} />
+              <Route path="/configuracoes" element={<Configuracoes />} />
+              <Route path="/ranking-categorias" element={<RankingCategorias />} />
 
-            {/* Se logado tentar ir pra login, redireciona pra home */}
-            <Route path="/login" element={<Navigate to="/" replace />} />
-          </Routes>
-        </div>
+              {/* Se logado tentar ir pra login, redireciona pra home */}
+              <Route path="/login" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </main>
       </div>
     </ValoresVisiveisProvider>
   );
