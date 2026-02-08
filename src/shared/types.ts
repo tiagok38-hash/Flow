@@ -70,6 +70,7 @@ export const DashboardStatsSchema = z.object({
   categoria_mais_gasta: z.object({
     nome: z.string(),
     valor: z.number(),
+    icone: z.string().optional(),
   }).nullable(),
 });
 

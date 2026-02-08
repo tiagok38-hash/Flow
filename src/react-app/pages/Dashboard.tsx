@@ -350,21 +350,29 @@ export default function Dashboard() {
         {stats?.categoria_mais_gasta && (
           <Link to="/ranking-categorias">
             <Card className="bg-white/90 backdrop-blur-sm shadow-2xl shadow-gray-400/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer transform animate-slide-up-delay-1 mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-light text-gray-500 mb-1">Categoria com maior gasto</p>
-                  <p className="text-lg font-light text-gray-900 mb-1">
-                    {stats.categoria_mais_gasta.nome}
-                  </p>
-                  <p className="text-base font-medium text-orange-500">
-                    {valoresVisiveis ? formatarMoeda(stats.categoria_mais_gasta.valor) : '••••••'}
-                  </p>
-                  <p className="text-xs text-teal-500 font-medium mt-1">
-                    Ver ranking completo →
-                  </p>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200">
+                  <TrendingDown className="text-gray-600" size={20} />
                 </div>
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100">
-                  <Icon name="award" size={20} className="text-orange-500" />
+                <h3 className="text-lg font-light text-gray-900">Categoria com maior gasto</h3>
+              </div>
+
+              <div className="flex items-center justify-between bg-gray-50/70 p-4 rounded-2xl">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-2xl bg-white shadow-sm">
+                    <Icon name={stats.categoria_mais_gasta.icone || 'award'} size={24} className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold text-gray-900 leading-tight">
+                      {stats.categoria_mais_gasta.nome}
+                    </p>
+                    <p className="text-base font-medium text-orange-500">
+                      {valoresVisiveis ? formatarMoeda(stats.categoria_mais_gasta.valor) : '••••••'}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-teal-500 font-medium text-sm">
+                  Ver ranking completo →
                 </div>
               </div>
             </Card>

@@ -159,6 +159,7 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
     let totalDespesas = 0;
     const gastosPorCategoria: Record<string, number> = {};
     const nomesCategorias: Record<string, string> = {};
+    const iconesCategorias: Record<string, string> = {};
 
     lancamentos.forEach(l => {
       if (l.tipo === 'receita') {
@@ -170,6 +171,7 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
         if (l.categoria_id) {
           gastosPorCategoria[l.categoria_id] = (gastosPorCategoria[l.categoria_id] || 0) + val;
           nomesCategorias[l.categoria_id] = l.categoria_nome || 'Sem Categoria';
+          iconesCategorias[l.categoria_id] = l.categoria_icone || 'circle';
         }
       }
     });
@@ -180,7 +182,11 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
     Object.entries(gastosPorCategoria).forEach(([id, valor]) => {
       if (valor > maiorValor) {
         maiorValor = valor;
-        maiorGasto = { nome: nomesCategorias[id], valor };
+        maiorGasto = {
+          nome: nomesCategorias[id],
+          valor,
+          icone: iconesCategorias[id]
+        };
       }
     });
 
