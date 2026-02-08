@@ -29,7 +29,7 @@ export default function Button({
   };
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
+    sm: 'px-2.5 py-1 text-xs',
     md: 'px-6 py-3 text-sm',
     lg: 'px-8 py-4 text-base',
   };

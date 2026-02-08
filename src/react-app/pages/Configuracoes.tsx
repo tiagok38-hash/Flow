@@ -220,7 +220,7 @@ export default function Configuracoes() {
                 size="sm"
                 variant="primary"
               >
-                <Plus size={16} className="mr-2" />
+                <Plus size={14} className="mr-2" />
                 Nova Categoria
               </Button>
             </div>
@@ -291,10 +291,9 @@ export default function Configuracoes() {
               <Button
                 onClick={() => setLimiteModalOpen(true)}
                 size="sm"
-                variant="secondary"
-                className="border-gray-200"
+                variant="primary"
               >
-                <Target size={16} className="mr-2" />
+                <Target size={14} className="mr-2" />
                 Criar Limite
               </Button>
             </div>
