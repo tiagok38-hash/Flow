@@ -295,7 +295,7 @@ export default function Configuracoes() {
                 className="border-gray-200"
               >
                 <Target size={16} className="mr-2" />
-                Configurar Limites
+                Criar Limite
               </Button>
             </div>
 
