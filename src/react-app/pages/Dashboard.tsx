@@ -59,8 +59,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-emerald-50 pb-32">
       {/* Header */}
-      <div className="px-4 sm:px-6 py-3 sm:py-4 relative">
-        <div className="max-w-6xl mx-auto">
+      <div className="py-3 sm:py-4 relative">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="p-2 rounded-2xl bg-gradient-to-br from-teal-100 to-cyan-100">

@@ -95,7 +95,7 @@ export default function Historico() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-emerald-50 pb-32">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 sm:py-4">
-        <div className="px-4 sm:px-6 py-3 sm:py-3 mb-3 sm:mb-4">
+        <div className="py-3 sm:py-3 mb-3 sm:mb-4">
           <div className="flex items-start gap-4">
             <div className="p-2 rounded-2xl bg-gradient-to-br from-teal-100 to-cyan-100">
               <History className="text-teal-600" size={20} />
