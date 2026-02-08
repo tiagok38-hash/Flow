@@ -66,7 +66,7 @@ export default function NovoLancamentoModal({
           const dados: NovoLancamento = {
             tipo: tipoAtivo,
             descricao: `${formData.descricao} (${i + 1}/${numParcelas})`,
-            categoria_id: tipoAtivo === 'despesa' ? formData.categoria_id : undefined,
+            categoria_id: formData.categoria_id || undefined,
             valor: valorParcela,
             data: dataLancamento.toISOString().split('T')[0],
             forma_pagamento: formData.forma_pagamento,
@@ -80,7 +80,7 @@ export default function NovoLancamentoModal({
         const dados: NovoLancamento = {
           tipo: tipoAtivo,
           descricao: formData.descricao,
-          categoria_id: tipoAtivo === 'despesa' ? formData.categoria_id : undefined,
+          categoria_id: formData.categoria_id || undefined,
           valor: valorFloat,
           data: formData.data,
           forma_pagamento: formData.forma_pagamento,
