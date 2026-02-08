@@ -370,7 +370,7 @@ export default function Dashboard() {
                   <div className="p-2 rounded-xl bg-gradient-to-br from-orange-100 to-orange-200">
                     <Trophy className="text-orange-500" size={20} />
                   </div>
-                  <h3 className="text-lg font-light text-gray-900">Categoria com maior gasto</h3>
+                  <h3 className="text-lg font-light text-gray-900">Categorias com maior gasto</h3>
                 </div>
 
                 <div className="bg-gray-50/70 p-4 rounded-2xl">
@@ -404,7 +404,7 @@ export default function Dashboard() {
                   <div className="p-2 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-100/50">
                     <Trophy className="text-teal-600" size={20} />
                   </div>
-                  <h3 className="text-lg font-light text-gray-900">Categoria com maior receita</h3>
+                  <h3 className="text-lg font-light text-gray-900">Categorias com maior receita</h3>
                 </div>
 
                 <div className="bg-teal-50/30 p-4 rounded-2xl border border-teal-100/20">
