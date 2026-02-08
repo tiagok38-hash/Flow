@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TrendingUp, TrendingDown, Clock, Edit, Trash2, Home, Target } from 'lucide-react';
+import { TrendingUp, TrendingDown, Clock, Edit, Trash2, Home, Target, Trophy } from 'lucide-react';
 import { Link } from 'react-router';
 import { useDashboardStats, useGastosPorCategoria, useLancamentos, useCategorias, formatarMoeda, formatarData, excluirLancamento } from '@/react-app/hooks/useApi';
 import { useValoresVisiveis } from '@/react-app/hooks/useValoresVisiveis';
@@ -367,7 +367,7 @@ export default function Dashboard() {
             <Card className="bg-white/90 backdrop-blur-sm shadow-2xl shadow-gray-400/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer transform animate-slide-up-delay-1 mb-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200">
-                  <TrendingDown className="text-gray-600" size={20} />
+                  <Trophy className="text-gray-600" size={20} />
                 </div>
                 <h3 className="text-lg font-light text-gray-900">Categoria com maior gasto</h3>
               </div>
