@@ -253,11 +253,6 @@ export default function Configuracoes() {
                       </div>
                       <div>
                         <p className="font-medium text-gray-900 text-sm">{categoria.nome}</p>
-                        {categoria.limite_mensal && (
-                          <p className="text-xs text-teal-500 font-light">
-                            Limite: R$ {categoria.limite_mensal.toFixed(2)}
-                          </p>
-                        )}
                       </div>
                     </div>
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
