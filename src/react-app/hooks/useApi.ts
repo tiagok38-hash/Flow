@@ -5,8 +5,19 @@ import { useSupabaseQuery } from './useSupabaseQuery';
 
 // --- Helpers de Data ---
 
-function getDataAtualBrasil(): Date {
-  return new Date();
+export function getDataAtualBrasil(): Date {
+  const data = new Date();
+  const brasilString = data.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" });
+  return new Date(brasilString);
+}
+
+export function getDataStringBrasil(): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
 }
 
 function getPeriodoRange(periodo: string): { start: string, end: string } {
@@ -72,7 +83,25 @@ export function useLancamentos(periodo: string = 'mes-atual') {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { start, end } = useMemo(() => getPeriodoRange(periodo), [periodo]);
+  /* 
+     Monitora a data atual para garantir que o filtro de 'mes-atual' atualize automaticamente
+     quando virar o mês (00:00 de Brasília do dia 01), zerando os totais visualmente.
+  */
+  const [currentDate, setCurrentDate] = useState(getDataAtualBrasil().toDateString());
+
+  useEffect(() => {
+    const checkDate = () => {
+      const now = getDataAtualBrasil().toDateString();
+      if (now !== currentDate) {
+        setCurrentDate(now);
+      }
+    };
+    // Verifica a cada minuto
+    const timer = setInterval(checkDate, 60000);
+    return () => clearInterval(timer);
+  }, [currentDate]);
+
+  const { start, end } = useMemo(() => getPeriodoRange(periodo), [periodo, currentDate]);
 
   const fetchLancamentos = useCallback(async () => {
     setLoading(true);

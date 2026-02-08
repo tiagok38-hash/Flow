@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
-import { useCategorias, useCartoes, criarLancamento, formatarMoeda } from '@/react-app/hooks/useApi';
+import { useCategorias, useCartoes, criarLancamento, formatarMoeda, getDataStringBrasil } from '@/react-app/hooks/useApi';
 import { useCurrencyFormat } from '@/react-app/hooks/useCurrencyFormat';
 import { NovoLancamento } from '@/shared/types';
 import Modal from './Modal';
@@ -24,19 +24,14 @@ export default function NovoLancamentoModal({
   const { data: cartoes } = useCartoes();
   const { formatInputValue, parseCurrency } = useCurrencyFormat();
 
-  // Função para obter data atual no fuso horário do Brasil
-  const getDataAtualBrasil = () => {
-    const agora = new Date();
-    const brasilia = new Date(agora.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
-    return brasilia.toISOString().split('T')[0];
-  };
+
 
   const [tipoAtivo, setTipoAtivo] = useState<'despesa' | 'receita'>('despesa');
   const [formData, setFormData] = useState({
     descricao: '',
     categoria_id: '',
     valor: '',
-    data: getDataAtualBrasil(),
+    data: getDataStringBrasil(),
     forma_pagamento: 'Pix' as 'Dinheiro' | 'Pix' | 'Débito' | 'Cartão',
     cartao_id: '',
     parcelado: false,
@@ -110,7 +105,7 @@ export default function NovoLancamentoModal({
         descricao: '',
         categoria_id: '',
         valor: '',
-        data: getDataAtualBrasil(),
+        data: getDataStringBrasil(),
         forma_pagamento: 'Pix',
         cartao_id: '',
         parcelado: false,
