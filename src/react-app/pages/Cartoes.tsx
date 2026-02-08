@@ -215,33 +215,45 @@ export default function Cartoes() {
                   }))
                   .filter(cartao => cartao.gasto > 0)
                   .sort((a, b) => b.gasto - a.gasto)
-                  .slice(0, rankingExpanded ? undefined : 2)
+                  .slice(0, rankingExpanded ? undefined : 3)
                   .map((cartao, index) => {
                     const posicao = index + 1;
                     const getMedalColor = (pos: number) => {
                       switch (pos) {
-                        case 1: return 'text-yellow-600';
-                        case 2: return 'text-gray-600';
-                        case 3: return 'text-amber-700';
-                        default: return 'text-gray-500';
+                        case 1: return 'text-yellow-500';
+                        case 2: return 'text-gray-400';
+                        case 3: return 'text-amber-600';
+                        default: return 'text-gray-300';
+                      }
+                    };
+
+                    const getMedalBg = (pos: number) => {
+                      switch (pos) {
+                        case 1: return 'bg-yellow-100 border-yellow-200';
+                        case 2: return 'bg-gray-100 border-gray-200';
+                        case 3: return 'bg-orange-50 border-orange-200';
+                        default: return 'bg-gray-50 border-gray-100';
                       }
                     };
 
                     return (
-                      <div key={cartao.id} className="flex items-center gap-4 p-3 bg-gray-50/70 rounded-xl hover:bg-gray-100/70 transition-all duration-200">
+                      <div key={cartao.id} className={`flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${posicao <= 3 ? 'bg-white border-l-4 shadow-sm' : 'bg-gray-50/70'
+                        } ${posicao === 1 ? 'border-yellow-400' :
+                          posicao === 2 ? 'border-gray-400' :
+                            posicao === 3 ? 'border-amber-500' : 'border-transparent'
+                        }`}>
                         <div className="flex items-center gap-3 flex-1">
                           {/* Posição */}
-                          <div className={`w-6 h-6 rounded-full bg-white border-2 ${posicao === 1 ? 'border-yellow-400' :
-                            posicao === 2 ? 'border-gray-400' :
-                              posicao === 3 ? 'border-amber-400' : 'border-gray-300'
-                            } flex items-center justify-center`}>
-                            <span className={`text-xs font-bold ${getMedalColor(posicao)}`}>
-                              {posicao}
-                            </span>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${getMedalBg(posicao)}`}>
+                            {posicao <= 3 ? (
+                              <Trophy size={14} className={getMedalColor(posicao)} />
+                            ) : (
+                              <span className="text-xs font-bold text-gray-500">{posicao}</span>
+                            )}
                           </div>
 
                           <div className="flex-1">
-                            <p className="font-medium text-gray-900 text-sm">{cartao.nome}</p>
+                            <p className="font-semibold text-gray-900 text-sm">{cartao.nome}</p>
                             {cartao.final4 && (
                               <p className="text-xs text-gray-500 font-light">•••• {cartao.final4}</p>
                             )}
@@ -249,7 +261,7 @@ export default function Cartoes() {
                         </div>
 
                         <div className="text-right">
-                          <p className="text-sm font-medium text-orange-500">
+                          <p className={`text-sm font-bold ${posicao === 1 ? 'text-yellow-600 font-extrabold text-base' : 'text-gray-700'}`}>
                             {formatarMoeda(cartao.gasto)}
                           </p>
                         </div>
@@ -257,15 +269,15 @@ export default function Cartoes() {
                     );
                   })}
 
-                {/* Botão para expandir/contrair se houver mais de 2 cartões com gastos */}
-                {cartoes.filter(cartao => getGastoCartao(cartao.id) > 0).length > 2 && (
+                {/* Botão para expandir/contrair se houver mais de 3 cartões com gastos */}
+                {cartoes.filter(cartao => getGastoCartao(cartao.id) > 0).length > 3 && (
                   <button
                     onClick={() => setRankingExpanded(!rankingExpanded)}
-                    className="w-full p-2 text-center text-amber-600 hover:text-amber-700 font-medium text-sm hover:bg-amber-50 rounded-xl transition-all duration-200"
+                    className="w-full p-2 text-center text-teal-600 hover:text-teal-700 font-medium text-sm hover:bg-teal-50 rounded-xl transition-all duration-200"
                   >
                     {rankingExpanded
                       ? 'Mostrar menos'
-                      : `Ver mais ${cartoes.filter(cartao => getGastoCartao(cartao.id) > 0).length - 2} cartões`
+                      : `Ver mais ${cartoes.filter(cartao => getGastoCartao(cartao.id) > 0).length - 3} cartões`
                     }
                   </button>
                 )}
