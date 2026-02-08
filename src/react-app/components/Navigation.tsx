@@ -1,14 +1,27 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router';
-import { Plus, Home, History, CreditCard, Settings, Wallet } from 'lucide-react';
+import { Plus, Home, History, CreditCard, Settings, Wallet, User, LogOut } from 'lucide-react';
+import { supabase } from '@/react-app/supabaseClient';
 import NovoLancamentoModal from './NovoLancamentoModal';
 
 export default function Navigation() {
   const location = useLocation();
   const [novoLancamentoModalOpen, setNovoLancamentoModalOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const [buttonOrigin, setButtonOrigin] = useState<{ x: number; y: number } | null>(null);
   const plusButtonRef = useRef<HTMLButtonElement>(null);
   const desktopPlusButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.replace('/login');
+  };
 
   const handleSuccess = () => {
     // Disparar evento para atualizar dados em toda a aplicação
@@ -70,13 +83,43 @@ export default function Navigation() {
         <button
           ref={desktopPlusButtonRef}
           onClick={() => handleOpenModal(desktopPlusButtonRef)}
-          className="mt-auto mb-4 flex items-center justify-center gap-3 p-4 bg-white text-teal-600 rounded-2xl font-bold shadow-xl shadow-black/10 hover:scale-[1.03] active:scale-95 transition-all duration-200"
+          className="mb-6 flex items-center justify-center gap-3 p-4 bg-white text-teal-600 rounded-2xl font-bold shadow-xl shadow-black/10 hover:scale-[1.03] active:scale-95 transition-all duration-200"
         >
           <div className="p-1 bg-teal-50 rounded-lg">
             <Plus size={20} className="text-teal-500" />
           </div>
           Novo Lançamento
         </button>
+
+        {/* User Section - Desktop Sidebar Bottom */}
+        <div className="pt-6 border-t border-white/10 mt-auto">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-white/20 border border-white/10 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                {user?.user_metadata?.picture ? (
+                  <img src={user.user_metadata.picture} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <User size={20} className="text-white" />
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-white truncate">
+                  {user?.user_metadata?.name || 'Usuário'}
+                </p>
+                <p className="text-[10px] text-white/60 truncate">
+                  {user?.email}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="p-2.5 rounded-xl bg-white/10 text-white hover:bg-red-500/20 hover:text-red-100 transition-all duration-200 active:scale-90"
+              title="Sair"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
+        </div>
       </aside>
 
       {/* Navegação Inferior - Mobile */}
@@ -145,4 +188,3 @@ export default function Navigation() {
     </>
   );
 }
-
