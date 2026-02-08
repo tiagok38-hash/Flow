@@ -367,8 +367,8 @@ export default function Dashboard() {
             <Link to="/ranking-categorias">
               <Card className="bg-white/90 backdrop-blur-sm shadow-2xl shadow-gray-400/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer transform animate-slide-up-delay-1 h-full">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200">
-                    <Trophy className="text-gray-600" size={20} />
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-orange-100 to-orange-200">
+                    <Trophy className="text-orange-500" size={20} />
                   </div>
                   <h3 className="text-lg font-light text-gray-900">Categoria com maior gasto</h3>
                 </div>
