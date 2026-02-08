@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { TrendingUp, TrendingDown, Clock, Edit, Trash2, Home } from 'lucide-react';
+import { TrendingUp, TrendingDown, Clock, Edit, Trash2, Home, Target } from 'lucide-react';
 import { Link } from 'react-router';
-import { useDashboardStats, useGastosPorCategoria, useLancamentos, formatarMoeda, formatarData, excluirLancamento } from '@/react-app/hooks/useApi';
+import { useDashboardStats, useGastosPorCategoria, useLancamentos, useCategorias, formatarMoeda, formatarData, excluirLancamento } from '@/react-app/hooks/useApi';
 import { useValoresVisiveis } from '@/react-app/hooks/useValoresVisiveis';
 import Card from '@/react-app/components/Card';
 import FilterChips from '@/react-app/components/FilterChips';
@@ -24,6 +24,7 @@ export default function Dashboard() {
   const { data: stats, loading: loadingStats, refetch: refetchStats } = useDashboardStats(periodo);
   const { data: gastosPorCategoria, loading: loadingGastos, refetch: refetchGastos } = useGastosPorCategoria(periodo);
   const { data: lancamentosRecentes, loading: loadingRecentes, refetch: refetchRecentes } = useLancamentos(periodo);
+  const { data: categorias } = useCategorias();
 
   const handleSuccess = () => {
     // Refetch dos dados em vez de recarregar a página
@@ -285,14 +286,14 @@ export default function Dashboard() {
             )}
           </Card>
 
-          {/* Card Gastos por categoria */}
-          <Link to="/ranking-categorias">
+          {/* Card Limite de gastos por categoria */}
+          <Link to="/configuracoes">
             <Card className="bg-white/90 backdrop-blur-sm shadow-2xl shadow-gray-400/30 animate-slide-up-delay-2 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer transform">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200">
-                  <TrendingDown className="text-gray-600" size={20} />
+                  <Target className="text-gray-600" size={20} />
                 </div>
-                <h3 className="text-lg font-light text-gray-900">Gastos por Categoria</h3>
+                <h3 className="text-lg font-light text-gray-900">Limite de gastos por categoria</h3>
               </div>
               {loadingGastos ? (
                 <div className="flex items-center justify-center h-64">
@@ -301,35 +302,53 @@ export default function Dashboard() {
               ) : gastosPorCategoria && gastosPorCategoria.length > 0 ? (
                 <div className="space-y-6">
                   {gastosPorCategoria.map((item) => {
-                    const maxValue = Math.max(...gastosPorCategoria.map(g => g.total));
-                    const percentage = (item.total / maxValue) * 100;
-                    // Usar sempre a cor laranja para gastos
-                    const colorClass = 'bg-gradient-to-r from-orange-400 to-red-400';
+                    const categoria = categorias?.find(c => c.id === item.categoria_id);
+                    const limite = categoria?.limite_mensal || 0;
+                    const percentual = limite > 0 ? (item.total / limite) * 100 : 0;
+                    const atingido = limite > 0 && item.total >= limite;
+                    const restante = limite > 0 ? Math.max(0, limite - item.total) : 0;
 
                     return (
-                      <div key={item.categoria_id} className="flex items-center gap-6">
-                        <div className="flex items-center gap-4 min-w-0 flex-1">
-                          <div className="p-3 rounded-2xl bg-gray-50">
-                            <Icon name={item.categoria_icone} size={18} className="text-gray-600" />
+                      <div key={item.categoria_id} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div className="p-2.5 rounded-xl bg-gray-50">
+                              <Icon name={item.categoria_icone} size={16} className="text-gray-600" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-gray-900 truncate text-sm">
+                                {item.categoria_nome}
+                              </p>
+                              <div className="flex items-center gap-2">
+                                <p className="text-xs text-gray-500 font-light">
+                                  {valoresVisiveis ? formatarMoeda(item.total) : '••••••'}
+                                </p>
+                                {limite > 0 && (
+                                  <span className="text-[10px] text-gray-400">
+                                    / {formatarMoeda(limite)}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="font-medium text-gray-900 truncate text-sm">
-                              {item.categoria_nome}
-                            </p>
-                            <p className="text-sm text-gray-500 font-light">
-                              {valoresVisiveis ? formatarMoeda(item.total) : '••••••'}
-                            </p>
-                          </div>
+                          {limite > 0 && (
+                            <div className="text-right">
+                              <p className={`text-[10px] font-medium ${atingido ? 'text-red-500' : 'text-teal-600'}`}>
+                                {atingido ? 'Limite atingido' : `Restante: ${valoresVisiveis ? formatarMoeda(restante) : '••••'}`}
+                              </p>
+                            </div>
+                          )}
                         </div>
 
-                        <div className="flex-1 max-w-xs">
-                          <div className="bg-gray-100 rounded-full h-2 overflow-hidden">
+                        {limite > 0 && (
+                          <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                             <div
-                              className={`h-full transition-all duration-700 ${colorClass} rounded-full`}
-                              style={{ width: `${percentage}%` }}
+                              className={`h-full transition-all duration-700 rounded-full ${atingido ? 'bg-red-500' : percentual > 80 ? 'bg-orange-400' : 'bg-teal-400'
+                                }`}
+                              style={{ width: `${Math.min(percentual, 100)}%` }}
                             />
                           </div>
-                        </div>
+                        )}
                       </div>
                     );
                   })}
