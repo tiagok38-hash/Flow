@@ -56,28 +56,6 @@ export default function Cartoes() {
     return gastosCartoes?.find(g => g.cartao_id === cartaoId)?.total || 0;
   };
 
-  const getDiasParaFechamento = (fechamentoDia: number) => {
-    const hoje = new Date();
-    const proximoFechamento = new Date(hoje.getFullYear(), hoje.getMonth(), fechamentoDia);
-    if (proximoFechamento < hoje) {
-      proximoFechamento.setMonth(proximoFechamento.getMonth() + 1);
-    }
-    const diffTime = proximoFechamento.getTime() - hoje.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  const getDiasParaVencimento = (vencimentoDia: number) => {
-    const hoje = new Date();
-    const proximoVencimento = new Date(hoje.getFullYear(), hoje.getMonth(), vencimentoDia);
-    if (proximoVencimento < hoje) {
-      proximoVencimento.setMonth(proximoVencimento.getMonth() + 1);
-    }
-    const diffTime = proximoVencimento.getTime() - hoje.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
   const getBandeira = (cartao: any) => {
     // Priorizar bandeira cadastrada no banco
     if (cartao.bandeira && typeof cartao.bandeira === 'string' && cartao.bandeira.trim() !== '') {
@@ -290,8 +268,6 @@ export default function Cartoes() {
               const gastoAtual = getGastoCartao(cartao.id);
               const limite = cartao.limite_mensal || 0;
               const percentualUso = limite > 0 ? gastoAtual / limite * 100 : 0;
-              const diasFechamento = getDiasParaFechamento(cartao.fechamento_dia);
-              const diasVencimento = getDiasParaVencimento(cartao.vencimento_dia);
 
               // Mapear cores para gradientes
               const coresCartao = {
@@ -316,7 +292,7 @@ export default function Cartoes() {
                   <Card
                     className="relative overflow-hidden bg-white/90 backdrop-blur-sm shadow-xl shadow-gray-400/30 transition-all duration-200 hover:shadow-2xl hover:shadow-gray-500/40 hover:scale-[1.02]"
                     style={{
-                      minHeight: '190px',
+                      minHeight: '162px',
                     }}
                   >
                     {/* Logo da bandeira - otimizado para iPhone */}
@@ -336,9 +312,9 @@ export default function Cartoes() {
 
 
                     {/* Conteúdo do cartão - otimizado para iPhone */}
-                    <div className="flex flex-col h-full p-3">
+                    <div className="flex flex-col h-full p-2.5">
                       {/* Header - responsivo para iPhone */}
-                      <div className="flex justify-between items-start mb-2 pt-0.5">
+                      <div className="flex justify-between items-start mb-1.5 pt-0.5">
                         <div className="flex items-center gap-2 flex-1">
                           <div className={`p-2 bg-gradient-to-r ${corCartao} rounded-lg shadow-sm`}>
                             <CreditCard className={isCorClara ? "text-gray-700" : "text-white"} size={14} />
@@ -359,13 +335,13 @@ export default function Cartoes() {
 
                       {/* Barra de progresso do limite */}
                       {limite > 0 && (
-                        <div className="mb-2">
-                          <div className="w-full bg-gray-100 rounded-full h-1 mb-1.5">
+                        <div className="mb-1.5">
+                          <div className="w-full bg-gray-100 rounded-full h-1 mb-1">
                             <div className={`h-1 rounded-full transition-all duration-500 ${percentualUso >= 90 ? 'bg-gradient-to-r from-orange-400 to-red-400' : percentualUso >= 70 ? 'bg-gradient-to-r from-yellow-400 to-orange-400' : 'bg-gradient-to-r from-teal-400 to-cyan-400'}`} style={{
                               width: `${Math.min(percentualUso, 100)}%`
                             }} />
                           </div>
-                          <div className="flex justify-between text-[11px] text-gray-600 font-medium">
+                          <div className="flex justify-between text-[10px] text-gray-600 font-medium">
                             <span>{percentualUso.toFixed(0)}% usado</span>
                             <span>{formatarMoeda(limite)}</span>
                           </div>
@@ -373,32 +349,26 @@ export default function Cartoes() {
                       )}
 
                       {/* Informações de datas - compacto para iPhone */}
-                      <div className="grid grid-cols-2 gap-2 mb-1.5">
+                      <div className="grid grid-cols-2 gap-2 mb-1">
                         <div className="text-center">
                           <div className="flex items-center justify-center gap-1 mb-0.5">
-                            <Calendar className="text-gray-500" size={9} />
-                            <span className="text-[10px] sm:text-xs text-gray-600 font-medium uppercase tracking-tighter">Fechamento</span>
+                            <Calendar className="text-gray-500" size={8} />
+                            <span className="text-[9px] sm:text-[10px] text-gray-600 font-medium uppercase tracking-tighter">Fechamento</span>
                           </div>
-                          <p className="text-xs font-semibold text-gray-900 leading-tight">Dia {cartao.fechamento_dia}</p>
-                          <p className="text-[9px] text-gray-500 font-light">
-                            {diasFechamento === 0 ? 'Hoje' : `${diasFechamento} dias`}
-                          </p>
+                          <p className="text-[11px] font-semibold text-gray-900 leading-tight">Dia {cartao.fechamento_dia}</p>
                         </div>
 
                         <div className="text-center">
                           <div className="flex items-center justify-center gap-1 mb-0.5">
-                            <DollarSign className="text-gray-500" size={9} />
-                            <span className="text-[10px] sm:text-xs text-gray-600 font-medium uppercase tracking-tighter">Vencimento</span>
+                            <DollarSign className="text-gray-500" size={8} />
+                            <span className="text-[9px] sm:text-[10px] text-gray-600 font-medium uppercase tracking-tighter">Vencimento</span>
                           </div>
-                          <p className="text-xs font-semibold text-gray-900 leading-tight">Dia {cartao.vencimento_dia}</p>
-                          <p className="text-[9px] text-gray-500 font-light">
-                            {diasVencimento === 0 ? 'Hoje' : `${diasVencimento} dias`}
-                          </p>
+                          <p className="text-[11px] font-semibold text-gray-900 leading-tight">Dia {cartao.vencimento_dia}</p>
                         </div>
                       </div>
 
                       {/* Rodapé com botões de ação */}
-                      <div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100/50">
+                      <div className="mt-auto flex items-center justify-between pt-1.5 border-t border-gray-100/50">
                         <div className="flex gap-2">
                           <button
                             onClick={(e) => {
