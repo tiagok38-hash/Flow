@@ -31,7 +31,6 @@ app.use("/*", cors());
 // Auth routes
 app.get('/api/oauth/google/redirect_url', async (c) => {
   if (!c.env.MOCHA_USERS_SERVICE_API_KEY) {
-    console.error('Missing MOCHA_USERS_SERVICE_API_KEY environment variable');
     return c.json({ error: 'Server configuration error: Missing API Key' }, 500);
   }
 
@@ -43,7 +42,6 @@ app.get('/api/oauth/google/redirect_url', async (c) => {
 
     return c.json({ redirectUrl }, 200);
   } catch (error) {
-    console.error('Auth error:', error);
     return c.json({ error: 'Failed to initialize authentication' }, 500);
   }
 });
@@ -134,29 +132,23 @@ function getCompetencia(data: string): string {
 // GET /api/categorias - Listar todas as categorias ativas
 app.get("/api/categorias", async (c) => {
   try {
-    console.log('[Debug] Iniciando GET /api/categorias');
     const db = c.env.DB;
     const user = c.get("user");
 
     if (!user || !user.id) {
-      console.log('[Debug] Usuário não encontrado ou sem ID');
       return c.json({ error: 'Usuário não encontrado' }, 401);
     }
 
-    console.log('[Debug] User ID:', user.id);
 
     // Verificar se o usuário já tem categorias padrão
-    console.log('[Debug] Verificando categorias existentes...');
     const categoriasExistentes = await db
       .prepare("SELECT COUNT(*) as count FROM categorias WHERE user_id = ? AND ativa = true")
       .bind(user.id)
       .first();
 
-    console.log('[Debug] Categorias existentes:', categoriasExistentes);
 
     // Se não tem categorias, criar as padrão (apenas uma vez) com verificação de duplicata
     if (categoriasExistentes && categoriasExistentes.count === 0) {
-      console.log('[Debug] Criando categorias padrão...');
       const categoriasDefault = [
         { nome: 'Alimentação', icone: 'utensils' },
         { nome: 'Moradia', icone: 'home' },
@@ -176,7 +168,6 @@ app.get("/api/categorias", async (c) => {
 
           if (!existing) {
             const id = generateId();
-            console.log(`[Debug] Criando categoria: ${cat.nome}`);
             await db
               .prepare(`
                 INSERT INTO categorias (id, nome, icone, user_id, ativa, created_at, updated_at)
@@ -185,17 +176,14 @@ app.get("/api/categorias", async (c) => {
               .bind(id, cat.nome, cat.icone, user.id)
               .run();
           } else {
-            console.log(`[Debug] Categoria ${cat.nome} já existe, pulando...`);
           }
         } catch (error) {
-          console.log(`[Debug] Erro ao criar categoria ${cat.nome}:`, error);
           // Ignorar erros de duplicata - pode acontecer em race conditions
         }
       }
     }
 
     // Buscar categorias do usuário (com DISTINCT para evitar duplicatas)
-    console.log('[Debug] Buscando categorias do usuário...');
     const categorias = await db
       .prepare(`
         SELECT DISTINCT id, nome, icone, ativa, limite_mensal, created_at, updated_at, user_id 
@@ -206,10 +194,8 @@ app.get("/api/categorias", async (c) => {
       .bind(true, user.id)
       .all();
 
-    console.log('[Debug] Categorias encontradas:', categorias);
 
     if (!categorias || !categorias.results) {
-      console.log('[Debug] Nenhuma categoria encontrada, retornando array vazio');
       return c.json([]);
     }
 
@@ -218,12 +204,9 @@ app.get("/api/categorias", async (c) => {
       array.findIndex((c: any) => c.nome.toLowerCase() === categoria.nome.toLowerCase()) === index
     );
 
-    console.log('[Debug] Retornando', categoriasUnicas.length, 'categorias únicas');
     return c.json(categoriasUnicas);
 
   } catch (error) {
-    console.error('[Debug] Erro no endpoint /api/categorias:', error);
-    console.error('[Debug] Stack trace:', error instanceof Error ? error.stack : 'No stack');
     return c.json({
       error: 'Erro interno do servidor ao buscar categorias',
       details: error instanceof Error ? error.message : String(error),
@@ -260,7 +243,6 @@ app.post("/api/categorias", async (c) => {
       .run();
 
     if (!resultado.success) {
-      console.error('Falha ao inserir categoria:', resultado);
       return c.json({ error: 'Erro ao salvar categoria no banco de dados' }, 500);
     }
 
@@ -270,13 +252,11 @@ app.post("/api/categorias", async (c) => {
       .first();
 
     if (!novaCategoria) {
-      console.error('Categoria não encontrada após inserção');
       return c.json({ error: 'Categoria não foi criada corretamente' }, 500);
     }
 
     return c.json(novaCategoria);
   } catch (error) {
-    console.error('Erro ao criar categoria:', error);
     const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
     return c.json({ error: `Erro ao criar categoria: ${errorMessage}` }, 500);
   }
@@ -359,21 +339,18 @@ app.get("/api/lancamentos", async (c) => {
   const hoje = getDataAtualBrasil();
   hoje.setHours(0, 0, 0, 0);
 
-  console.log(`[Debug] Filtro período: ${periodo}, Data Brasil hoje: ${hoje.toISOString().split('T')[0]}`);
 
   // Verificar se é período personalizado
   if (periodo.startsWith('custom:')) {
     const [, dataInicio, dataFim] = periodo.split(':');
     whereClause += " AND l.data >= ? AND l.data <= ?";
     params.push(dataInicio, dataFim);
-    console.log(`[Debug] Período custom: ${dataInicio} até ${dataFim}`);
   } else {
     switch (periodo) {
       case "hoje":
         const hojeFmt = hoje.toISOString().split('T')[0];
         whereClause += " AND l.data = ?";
         params.push(hojeFmt);
-        console.log(`[Debug] Filtro hoje: ${hojeFmt}`);
         break;
       case "semana":
         // Calcular início da semana (segunda-feira) no horário do Brasil
@@ -391,7 +368,6 @@ app.get("/api/lancamentos", async (c) => {
 
         whereClause += " AND l.data >= ? AND l.data <= ?";
         params.push(inicioSemanaFmt, fimSemanaFmt);
-        console.log(`[Debug] Filtro semana: ${inicioSemanaFmt} até ${fimSemanaFmt}`);
         break;
       case "mes-atual":
         // Primeiro e último dia do mês atual no horário do Brasil
@@ -405,7 +381,6 @@ app.get("/api/lancamentos", async (c) => {
 
         whereClause += " AND l.data >= ? AND l.data <= ?";
         params.push(inicioMesFmt, fimMesFmt);
-        console.log(`[Debug] Filtro mês atual: ${inicioMesFmt} até ${fimMesFmt}`);
         break;
       case "mes-passado":
         const anoPassado = hoje.getMonth() === 0 ? hoje.getFullYear() - 1 : hoje.getFullYear();
@@ -418,7 +393,6 @@ app.get("/api/lancamentos", async (c) => {
 
         whereClause += " AND l.data >= ? AND l.data <= ?";
         params.push(inicioMesPassadoFmt, fimMesPassadoFmt);
-        console.log(`[Debug] Filtro mês passado: ${inicioMesPassadoFmt} até ${fimMesPassadoFmt}`);
         break;
       case "ano":
         const anoCompleto = hoje.getFullYear();
@@ -430,7 +404,6 @@ app.get("/api/lancamentos", async (c) => {
 
         whereClause += " AND l.data >= ? AND l.data <= ?";
         params.push(inicioAnoFmt, fimAnoFmt);
-        console.log(`[Debug] Filtro ano: ${inicioAnoFmt} até ${fimAnoFmt}`);
         break;
     }
   }
@@ -443,12 +416,9 @@ app.get("/api/lancamentos", async (c) => {
     ORDER BY l.data DESC, l.created_at DESC
   `;
 
-  console.log(`[Debug] Query final: ${query}`);
-  console.log(`[Debug] Params: ${JSON.stringify(params)}`);
 
   const lancamentos = await db.prepare(query).bind(...params).all();
 
-  console.log(`[Debug] Lançamentos encontrados: ${lancamentos.results?.length || 0}`);
 
   return c.json(lancamentos.results);
 });
@@ -776,12 +746,8 @@ app.get("/api/cartoes", async (c) => {
     .bind(user?.id)
     .all();
 
-  console.log('Safari Debug - Backend - Cartões recuperados do banco:', cartoes.results);
   if (cartoes.results && cartoes.results.length > 0) {
     cartoes.results.forEach((cartao: any, index: number) => {
-      console.log(`Safari Debug - Backend - Cartão ${index + 1}:`, cartao);
-      console.log(`Safari Debug - Backend - Cor do cartão ${index + 1}:`, cartao.cor);
-      console.log(`Safari Debug - Backend - Bandeira do cartão ${index + 1}:`, cartao.bandeira);
     });
   }
 
@@ -794,9 +760,6 @@ app.post("/api/cartoes", async (c) => {
   const user = c.get("user");
   const dados = await c.req.json();
 
-  console.log('Safari Debug - Backend - Dados recebidos para criar cartão:', dados);
-  console.log('Safari Debug - Backend - Cor recebida:', dados.cor);
-  console.log('Safari Debug - Backend - Bandeira recebida:', dados.bandeira);
 
   // Validar dados obrigatórios
   if (!dados.nome || !dados.fechamento_dia || !dados.vencimento_dia) {
@@ -818,8 +781,6 @@ app.post("/api/cartoes", async (c) => {
   const corFinal = dados.cor && typeof dados.cor === 'string' && dados.cor.trim() !== '' ? dados.cor.trim() : 'azul';
   const bandeiraFinal = dados.bandeira && typeof dados.bandeira === 'string' && dados.bandeira.trim() !== '' ? dados.bandeira.trim() : null;
 
-  console.log('Safari Debug - Backend - Cor final a ser salva:', corFinal);
-  console.log('Safari Debug - Backend - Bandeira final a ser salva:', bandeiraFinal);
 
   try {
     // Tentar inserir com todas as colunas primeiro
@@ -844,7 +805,6 @@ app.post("/api/cartoes", async (c) => {
         .run();
     } catch (error) {
       // Se falhar, tentar sem as colunas cor e bandeira
-      console.log('Tentando inserir sem colunas cor e bandeira:', error);
       resultado = await db
         .prepare(`
           INSERT INTO cartoes (id, nome, final4, fechamento_dia, vencimento_dia, limite_mensal, user_id, created_at, updated_at)
@@ -863,7 +823,6 @@ app.post("/api/cartoes", async (c) => {
     }
 
     if (!resultado.success) {
-      console.error('Safari Debug - Backend - Falha ao inserir cartão:', resultado);
       return c.json({ error: 'Erro ao salvar cartão no banco de dados' }, 500);
     }
 
@@ -872,14 +831,9 @@ app.post("/api/cartoes", async (c) => {
       .bind(id, user?.id)
       .first();
 
-    console.log('Safari Debug - Backend - Cartão criado e recuperado do banco:', novoCartao);
-    console.log('Safari Debug - Backend - Cor salva no banco:', novoCartao?.cor);
-    console.log('Safari Debug - Backend - Bandeira salva no banco:', novoCartao?.bandeira);
 
     return c.json(novoCartao);
   } catch (error) {
-    console.error('Safari Debug - Backend - Erro ao criar cartão:', error);
-    console.error('Safari Debug - Backend - Dados recebidos:', dados);
     const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
     return c.json({ error: 'Erro ao criar cartão: ' + errorMessage }, 500);
   }
@@ -892,17 +846,11 @@ app.put("/api/cartoes/:id", async (c) => {
   const id = c.req.param("id");
   const dados = await c.req.json();
 
-  console.log('Safari Debug - Backend - Dados recebidos para editar cartão:', dados);
-  console.log('Safari Debug - Backend - ID do cartão:', id);
-  console.log('Safari Debug - Backend - Cor recebida:', dados.cor);
-  console.log('Safari Debug - Backend - Bandeira recebida:', dados.bandeira);
 
   // Garantir valores padrão para campos obrigatórios do Safari
   const corFinal = dados.cor && typeof dados.cor === 'string' && dados.cor.trim() !== '' ? dados.cor.trim() : 'azul';
   const bandeiraFinal = dados.bandeira && typeof dados.bandeira === 'string' && dados.bandeira.trim() !== '' ? dados.bandeira.trim() : null;
 
-  console.log('Safari Debug - Backend - Cor final a ser atualizada:', corFinal);
-  console.log('Safari Debug - Backend - Bandeira final a ser atualizada:', bandeiraFinal);
 
   try {
     // Primeiro, verificar se o cartão existe e verificar quais colunas estão disponíveis
@@ -939,7 +887,6 @@ app.put("/api/cartoes/:id", async (c) => {
         .run();
     } catch (error) {
       // Se falhar, tentar sem as colunas cor e bandeira
-      console.log('Tentando atualizar sem colunas cor e bandeira:', error);
       result = await db
         .prepare(`
           UPDATE cartoes SET
@@ -959,10 +906,8 @@ app.put("/api/cartoes/:id", async (c) => {
         .run();
     }
 
-    console.log('Safari Debug - Backend - Resultado da atualização:', result);
 
     if (!result.success) {
-      console.error('Safari Debug - Backend - Falha ao atualizar cartão:', result);
       return c.json({ error: 'Erro ao atualizar cartão no banco de dados' }, 500);
     }
 
@@ -971,13 +916,9 @@ app.put("/api/cartoes/:id", async (c) => {
       .bind(id, user?.id)
       .first();
 
-    console.log('Safari Debug - Backend - Cartão atualizado recuperado do banco:', cartaoAtualizado);
-    console.log('Safari Debug - Backend - Cor atualizada no banco:', cartaoAtualizado?.cor);
-    console.log('Safari Debug - Backend - Bandeira atualizada no banco:', cartaoAtualizado?.bandeira);
 
     return c.json(cartaoAtualizado);
   } catch (error) {
-    console.error('Safari Debug - Backend - Erro ao editar cartão:', error);
     const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
     return c.json({ error: 'Erro ao editar cartão: ' + errorMessage }, 500);
   }
@@ -1317,7 +1258,6 @@ const processarLancamentosFixos = async (db: D1Database) => {
 
       processados++;
     } catch (error) {
-      console.error(`Erro ao processar lançamento fixo ${lancamentoFixo.id}:`, error);
     }
   }
 

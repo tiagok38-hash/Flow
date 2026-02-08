@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CreditCard, Plus, Calendar, DollarSign, AlertTriangle, Edit, Trash2, Trophy } from 'lucide-react';
-import { useCartoes, useGastosCartoes, formatarMoeda } from '@/react-app/hooks/useApi';
+import { useCartoes, useGastosCartoes, formatarMoeda, excluirCartao } from '@/react-app/hooks/useApi';
 import Card from '@/react-app/components/Card';
 import Button from '@/react-app/components/Button';
 import CartaoModal from '@/react-app/components/CartaoModal';
@@ -37,17 +37,7 @@ export default function Cartoes() {
 
   const handleDeleteCartao = async (cartaoId: string) => {
     try {
-      const response = await fetch(`/api/cartoes/${cartaoId}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro ${response.status}`);
-      }
-
-      // Disparar evento de atualização
-      window.dispatchEvent(new CustomEvent('financeDataUpdated'));
+      await excluirCartao(cartaoId);
 
       // Forçar refresh após um pequeno delay
       setTimeout(() => {
