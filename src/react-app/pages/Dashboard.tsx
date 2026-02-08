@@ -387,8 +387,8 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 pt-2 border-t border-gray-100 flex justify-end">
-                <div className="text-teal-600 font-medium text-sm flex items-center gap-1">
+              <div className="mt-2 flex justify-end">
+                <div className="text-teal-600 font-medium text-xs flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity">
                   Ver ranking completo →
                 </div>
               </div>
