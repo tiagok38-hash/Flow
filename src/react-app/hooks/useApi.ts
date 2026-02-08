@@ -223,8 +223,29 @@ export function useGastosPorCategoria(periodo: string = 'mes-atual') {
   return { data: gastos, loading, error: null, refetch };
 }
 
-export function useGastosCartoes() {
-  return { data: [] as any[], loading: false, error: null };
+export function useGastosCartoes(periodo: string = 'mes-atual') {
+  const { data: lancamentos, loading, refetch } = useLancamentos(periodo);
+
+  const gastos = useMemo(() => {
+    if (!lancamentos) return [];
+
+    const agrupado: Record<string, any> = {};
+
+    lancamentos.filter(l => l.tipo === 'despesa' && l.forma_pagamento === 'Cartão' && l.cartao_id).forEach(l => {
+      const cartaoId = l.cartao_id!;
+      if (!agrupado[cartaoId]) {
+        agrupado[cartaoId] = {
+          cartao_id: cartaoId,
+          total: 0
+        };
+      }
+      agrupado[cartaoId].total += Math.abs(Number(l.valor));
+    });
+
+    return Object.values(agrupado);
+  }, [lancamentos]);
+
+  return { data: gastos, loading, error: null, refetch };
 }
 
 // --- Funções de Escrita (Mutations) ---
