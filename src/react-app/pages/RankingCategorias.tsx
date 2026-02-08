@@ -29,7 +29,7 @@ export default function RankingCategorias() {
   // Pegar apenas as top 3 categorias
   const top3Categorias = gastosPorCategoria?.slice(0, 3) || [];
 
-  
+
 
   const getMedalColor = (posicao: number) => {
     switch (posicao) {
@@ -102,20 +102,19 @@ export default function RankingCategorias() {
             {/* Pódio das top 3 - Card único */}
             <Card className="bg-white/80 backdrop-blur-sm shadow-xl shadow-gray-400/30 animate-slide-up max-w-4xl mx-auto">
               <h3 className="text-lg font-light text-gray-900 mb-6 text-center">Top 3 Categorias</h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
                 {top3Categorias.map((categoria, index) => {
                   const posicao = index + 1;
                   const medalColor = getMedalColor(posicao);
                   const numberColor = getNumberColor(posicao);
-                  
+
                   return (
-                    <div 
-                      key={categoria.categoria_id} 
-                      className={`relative overflow-hidden bg-gray-50/70 rounded-2xl sm:rounded-3xl p-3 sm:p-6 transition-all duration-300 hover:scale-[1.02] animate-slide-up ${
-                        posicao === 1 ? 'sm:order-2 ring-2 ring-yellow-400/50 bg-yellow-50/70' : 
-                        posicao === 2 ? 'sm:order-1' : 'sm:order-3'
-                      }`}
+                    <div
+                      key={categoria.categoria_id}
+                      className={`relative overflow-hidden bg-gray-50/70 rounded-2xl sm:rounded-3xl p-3 sm:p-6 transition-all duration-300 hover:scale-[1.02] animate-slide-up ${posicao === 1 ? 'sm:order-2 ring-2 ring-yellow-400/50 bg-yellow-50/70' :
+                          posicao === 2 ? 'sm:order-1' : 'sm:order-3'
+                        }`}
                       style={{
                         animationDelay: `${index * 150}ms`
                       }}
@@ -126,8 +125,8 @@ export default function RankingCategorias() {
                         <div className="flex justify-center mb-2 sm:mb-3">
                           <div className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br ${medalColor} shadow-md`}>
                             {posicao === 1 ? <Trophy className="text-yellow-600" size={18} /> :
-                             posicao === 2 ? <Trophy className="text-gray-600" size={18} /> :
-                             <Trophy className="text-amber-700" size={18} />}
+                              posicao === 2 ? <Trophy className="text-gray-600" size={18} /> :
+                                <Trophy className="text-amber-700" size={18} />}
                           </div>
                         </div>
 
@@ -141,10 +140,10 @@ export default function RankingCategorias() {
                         {/* Ícone da categoria */}
                         <div className="flex justify-center mb-2 sm:mb-3">
                           <div className="p-1.5 sm:p-2 bg-white rounded-lg sm:rounded-xl shadow-sm">
-                            <Icon 
-                              name={categoria.categoria_icone} 
-                              size={16} 
-                              className="text-gray-600" 
+                            <Icon
+                              name={categoria.categoria_icone}
+                              size={16}
+                              className="text-gray-600"
                             />
                           </div>
                         </div>
@@ -159,7 +158,7 @@ export default function RankingCategorias() {
                           <p className="text-sm sm:text-lg font-bold text-orange-500 mb-1">
                             {formatarMoeda(categoria.total)}
                           </p>
-                          
+
                           {/* Percentual do total */}
                           {gastosPorCategoria && gastosPorCategoria.length > 1 && (
                             <p className="text-xs text-gray-500 font-light">
@@ -183,27 +182,25 @@ export default function RankingCategorias() {
             <Card className="bg-white/70 backdrop-blur-sm shadow-xl shadow-gray-400/30 animate-slide-up-delay-1">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-light text-gray-900">Visualização por Categoria</h3>
-                
+
                 {/* Toggle entre pizza e barras */}
                 <div className="flex bg-gray-100 rounded-2xl p-1">
                   <button
                     onClick={() => setTipoGrafico('pizza')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      tipoGrafico === 'pizza'
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${tipoGrafico === 'pizza'
                         ? 'bg-white text-teal-600 shadow-sm'
                         : 'text-gray-600 hover:text-gray-800'
-                    }`}
+                      }`}
                   >
                     <PieChart size={16} />
                     Pizza
                   </button>
                   <button
                     onClick={() => setTipoGrafico('barras')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      tipoGrafico === 'barras'
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${tipoGrafico === 'barras'
                         ? 'bg-white text-teal-600 shadow-sm'
                         : 'text-gray-600 hover:text-gray-800'
-                    }`}
+                      }`}
                   >
                     <BarChart3 size={16} />
                     Barras
@@ -216,114 +213,162 @@ export default function RankingCategorias() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-400"></div>
                 </div>
               ) : gastosPorCategoria && gastosPorCategoria.length > 0 ? (
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    {tipoGrafico === 'pizza' ? (
-                      <RechartsPieChart>
-                        <Pie
-                          data={gastosPorCategoria.map((item, index) => ({
-                            name: item.categoria_nome,
-                            value: item.total,
-                            color: COLORS[index % COLORS.length]
-                          }))}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={120}
-                          paddingAngle={2}
-                          dataKey="value"
-                        >
-                          {gastosPorCategoria.map((_, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip
-                          content={({ active, payload }) => {
-                            if (active && payload && payload.length) {
-                              const data = payload[0];
-                              const total = gastosPorCategoria.reduce((acc, item) => acc + item.total, 0);
-                              const percentual = ((data.value / total) * 100).toFixed(1);
-                              const categoria = gastosPorCategoria.find(cat => cat.categoria_nome === data.payload.name);
-                              
-                              return (
-                                <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-100 min-w-48">
-                                  <div className="flex items-center gap-3 mb-2">
-                                    <div className="p-2 rounded-lg bg-gray-50">
-                                      <Icon name={categoria?.categoria_icone || 'circle'} size={16} className="text-gray-600" />
-                                    </div>
-                                    <p className="font-semibold text-gray-900 text-sm">{data.payload.name}</p>
-                                  </div>
-                                  
-                                  <div className="space-y-1">
-                                    <div className="flex justify-between items-center">
-                                      <span className="text-xs text-gray-500">Valor gasto:</span>
-                                      <span className="text-orange-500 font-bold text-sm">{formatarMoeda(data.value)}</span>
-                                    </div>
-                                    
-                                    <div className="flex justify-between items-center">
-                                      <span className="text-xs text-gray-500">Percentual:</span>
-                                      <span className="text-teal-600 font-medium text-sm">{percentual}%</span>
-                                    </div>
-                                    
-                                    <div className="pt-2 border-t border-gray-100">
-                                      <div className="bg-gray-100 rounded-full h-2">
-                                        <div
-                                          className="bg-gradient-to-r from-orange-400 to-red-400 h-2 rounded-full transition-all duration-300"
-                                          style={{ width: `${percentual}%` }}
-                                        />
+                <div className={`${tipoGrafico === 'pizza' ? 'h-auto min-h-[320px]' : 'h-80'}`}>
+                  {tipoGrafico === 'pizza' ? (
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-4">
+                      {/* Gráfico de Pizza */}
+                      <div className="w-full md:w-1/2 h-64 sm:h-72">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsPieChart>
+                            <Pie
+                              data={gastosPorCategoria.map((item, index) => ({
+                                name: item.categoria_nome,
+                                value: item.total,
+                                color: COLORS[index % COLORS.length]
+                              }))}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={65}
+                              outerRadius={100}
+                              paddingAngle={4}
+                              dataKey="value"
+                              stroke="none"
+                            >
+                              {gastosPorCategoria.map((_, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={COLORS[index % COLORS.length]}
+                                  className="transition-all duration-300 hover:opacity-80 cursor-pointer"
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip
+                              content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                  const data = payload[0];
+                                  const total = gastosPorCategoria.reduce((acc, item) => acc + item.total, 0);
+                                  const percentual = ((data.value / total) * 100).toFixed(1);
+                                  const categoria = gastosPorCategoria.find(cat => cat.categoria_nome === data.payload.name);
+
+                                  return (
+                                    <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-gray-100 min-w-[200px] animate-fade-in">
+                                      <div className="flex items-center gap-3 mb-3">
+                                        <div className="p-2 rounded-xl bg-gray-50 shadow-sm">
+                                          <Icon name={categoria?.categoria_icone || 'circle'} size={16} className="text-gray-600" />
+                                        </div>
+                                        <p className="font-bold text-gray-900 text-sm tracking-tight">{data.payload.name}</p>
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        <div className="flex justify-between items-center">
+                                          <span className="text-xs text-gray-500 font-light tracking-wide">Valor gasto</span>
+                                          <span className="text-orange-500 font-bold text-sm">{formatarMoeda(data.value)}</span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center">
+                                          <span className="text-xs text-gray-500 font-light tracking-wide">Participação</span>
+                                          <span className="text-teal-600 font-semibold text-sm">{percentual}%</span>
+                                        </div>
+
+                                        <div className="pt-2">
+                                          <div className="bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                            <div
+                                              className="bg-gradient-to-r from-orange-400 to-red-400 h-full rounded-full transition-all duration-500"
+                                              style={{ width: `${percentual}%` }}
+                                            />
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </div>
-                              );
-                            }
-                            return null;
-                          }}
-                        />
-                      </RechartsPieChart>
-                    ) : (
+                                  );
+                                }
+                                return null;
+                              }}
+                            />
+                          </RechartsPieChart>
+                        </ResponsiveContainer>
+                      </div>
+
+                      {/* Legenda Customizada */}
+                      <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                        {gastosPorCategoria.map((item, index) => (
+                          <div
+                            key={`legenda-${index}`}
+                            className="flex items-center gap-3 p-3 bg-gray-50/50 rounded-2xl hover:bg-white hover:shadow-md transition-all duration-200 border border-transparent hover:border-gray-100 group"
+                          >
+                            <div
+                              className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm group-hover:scale-125 transition-transform"
+                              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-0.5 truncate leading-tight">
+                                {item.categoria_nome}
+                              </p>
+                              <p className="text-sm font-bold text-gray-900 leading-tight">
+                                {formatarMoeda(item.total)}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height="100%">
                       <BarChart
                         data={gastosPorCategoria.map((item, index) => ({
                           name: item.categoria_nome,
                           valor: item.total,
                           color: COLORS[index % COLORS.length]
                         }))}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                        margin={{ top: 20, right: 30, left: 10, bottom: 40 }}
+                        barSize={32}
                       >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis 
-                          dataKey="name" 
-                          tick={{ fontSize: 12 }}
-                          angle={-45}
-                          textAnchor="end"
-                          height={80}
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                        <XAxis
+                          dataKey="name"
+                          tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 300 }}
+                          axisLine={false}
+                          tickLine={false}
+                          dy={15}
                         />
-                        <YAxis 
-                          tick={{ fontSize: 12 }}
-                          tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`}
+                        <YAxis
+                          tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 300 }}
+                          axisLine={false}
+                          tickLine={false}
+                          tickFormatter={(value) => value >= 1000 ? `R$ ${(value / 1000).toFixed(0)}k` : `R$ ${value}`}
+                          dx={-10}
                         />
                         <Tooltip
+                          cursor={{ fill: '#f8fafc', radius: 12 }}
                           content={({ active, payload }) => {
                             if (active && payload && payload.length) {
                               const data = payload[0];
                               return (
-                                <div className="bg-white p-3 rounded-2xl shadow-lg border border-gray-100">
-                                  <p className="font-medium text-gray-900">{data.payload.name}</p>
-                                  <p className="text-orange-500 font-medium">{formatarMoeda(data.value)}</p>
+                                <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-gray-100 animate-fade-in min-w-[140px]">
+                                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-1">{data.payload.name}</p>
+                                  <p className="text-sm font-bold text-orange-500">{formatarMoeda(data.value)}</p>
                                 </div>
                               );
                             }
                             return null;
                           }}
                         />
-                        <Bar 
-                          dataKey="valor" 
-                          fill="#F97316"
-                          radius={[4, 4, 0, 0]}
-                        />
+                        <Bar
+                          dataKey="valor"
+                          radius={[8, 8, 8, 8]}
+                          className="transition-all duration-300"
+                        >
+                          {gastosPorCategoria.map((_, index) => (
+                            <Cell
+                              key={`bar-cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                              className="hover:opacity-80"
+                            />
+                          ))}
+                        </Bar>
                       </BarChart>
-                    )}
-                  </ResponsiveContainer>
+                    </ResponsiveContainer>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-16">
@@ -344,11 +389,11 @@ export default function RankingCategorias() {
             {gastosPorCategoria && gastosPorCategoria.length > 3 && (
               <Card className="bg-white/70 backdrop-blur-sm shadow-xl shadow-gray-400/30 animate-slide-up-delay-2">
                 <h3 className="text-lg font-light text-gray-900 mb-6">Outras Categorias</h3>
-                
+
                 <div className="space-y-4">
                   {gastosPorCategoria.slice(3).map((categoria, index) => {
                     const posicao = index + 4;
-                    
+
                     return (
                       <div key={categoria.categoria_id} className="flex items-center gap-4 p-4 bg-gray-50/50 rounded-2xl hover:bg-gray-100/50 transition-all duration-200">
                         <div className="flex items-center gap-4 flex-1">
@@ -356,12 +401,12 @@ export default function RankingCategorias() {
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                             <span className="text-sm font-medium text-gray-600">{posicao}</span>
                           </div>
-                          
+
                           {/* Ícone da categoria */}
                           <div className="p-3 rounded-2xl bg-white shadow-sm">
                             <Icon name={categoria.categoria_icone} size={18} className="text-gray-600" />
                           </div>
-                          
+
                           <div className="flex-1">
                             <p className="font-medium text-gray-900 text-sm">{categoria.categoria_nome}</p>
                             <p className="text-xs text-gray-500 font-light">
@@ -369,7 +414,7 @@ export default function RankingCategorias() {
                             </p>
                           </div>
                         </div>
-                        
+
                         <div className="text-right">
                           <p className="text-sm font-medium text-orange-500">
                             {formatarMoeda(categoria.total)}

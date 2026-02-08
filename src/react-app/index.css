@@ -71,7 +71,6 @@
   z-index: 9999 !important;
 }
 
-/* Prevent scroll issues with fixed elements on iOS Safari */
 @supports (-webkit-overflow-scrolling: touch) {
   .fixed-top-ui {
     position: -webkit-sticky;
@@ -79,4 +78,27 @@
     top: 1rem;
     right: 1rem;
   }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: block;
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
 }
