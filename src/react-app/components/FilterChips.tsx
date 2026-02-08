@@ -54,8 +54,8 @@ export default function FilterChips({ selectedPeriodo, onPeriodoChange }: Filter
             key={periodo.key}
             onClick={() => onPeriodoChange(periodo.key)}
             className={`flex-1 px-4 py-2 rounded-2xl text-sm font-light transition-all duration-200 hover:scale-105 whitespace-nowrap flex justify-center items-center ${selectedPeriodo === periodo.key
-                ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
-                : 'bg-white/60 text-gray-600 hover:bg-white hover:shadow-md border border-gray-300/70'
+              ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
+              : 'bg-white/60 text-gray-600 hover:bg-white hover:shadow-md border border-gray-300/70'
               }`}
           >
             {periodo.label}
@@ -65,9 +65,9 @@ export default function FilterChips({ selectedPeriodo, onPeriodoChange }: Filter
         {/* Ícone de calendário clicável - sempre visível */}
         <button
           onClick={() => setShowDatePicker(true)}
-          className={`p-2 rounded-2xl transition-all duration-200 hover:scale-105 flex items-center justify-center ${isCustomPeriod
-              ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
-              : 'bg-white/60 text-gray-600 hover:bg-white hover:shadow-md border border-gray-300/70'
+          className={`px-4 py-2 rounded-2xl transition-all duration-200 hover:scale-105 flex items-center justify-center ${isCustomPeriod
+            ? 'bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-lg shadow-teal-500/25'
+            : 'bg-white/60 text-gray-600 hover:bg-white hover:shadow-md border border-gray-300/70'
             }`}
           title="Selecionar período personalizado"
         >
