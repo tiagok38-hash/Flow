@@ -323,8 +323,7 @@ export default function Cartoes() {
                     className={`relative overflow-hidden bg-white/90 backdrop-blur-sm shadow-xl shadow-gray-400/30 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-500/40 cursor-pointer touch-manipulation ${isExpanded ? 'shadow-2xl shadow-gray-500/50 scale-105' : 'active:scale-95'
                       }`}
                     style={{
-                      aspectRatio: '1.58 / 0.75',
-                      minHeight: isExpanded ? '300px' : '220px',
+                      minHeight: isExpanded ? '260px' : '220px',
                       transition: 'all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)'
                     }}
                   >
