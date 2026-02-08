@@ -372,7 +372,7 @@ export default function Dashboard() {
                 <h3 className="text-lg font-light text-gray-900">Categoria com maior gasto</h3>
               </div>
 
-              <div className="flex items-center justify-between bg-gray-50/70 p-4 rounded-2xl">
+              <div className="bg-gray-50/70 p-4 rounded-2xl">
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-2xl bg-white shadow-sm">
                     <Icon name={stats.categoria_mais_gasta.icone || 'award'} size={24} className="text-orange-500" />
@@ -386,7 +386,9 @@ export default function Dashboard() {
                     </p>
                   </div>
                 </div>
-                <div className="text-teal-500 font-medium text-sm">
+              </div>
+              <div className="mt-4 pt-2 border-t border-gray-100 flex justify-end">
+                <div className="text-teal-600 font-medium text-sm flex items-center gap-1">
                   Ver ranking completo →
                 </div>
               </div>
