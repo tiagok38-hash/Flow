@@ -163,7 +163,7 @@ export default function Cartoes() {
               <div className="p-2 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100">
                 <Trophy className="text-amber-600" size={18} />
               </div>
-              <h3 className="text-lg font-light text-gray-900">Ranking de Gastos</h3>
+              <h3 className="text-lg font-light text-gray-900">Ranking de gastos por cartão</h3>
             </div>
 
             {loadingGastos ? (
@@ -292,7 +292,7 @@ export default function Cartoes() {
                   <Card
                     className="relative overflow-hidden bg-white/90 backdrop-blur-sm shadow-xl shadow-gray-400/30 transition-all duration-200 hover:shadow-2xl hover:shadow-gray-500/40 hover:scale-[1.02]"
                     style={{
-                      minHeight: '138px',
+                      minHeight: '150px',
                     }}
                   >
                     {/* Logo da bandeira - otimizado para iPhone */}
@@ -341,7 +341,7 @@ export default function Cartoes() {
                               width: `${Math.min(percentualUso, 100)}%`
                             }} />
                           </div>
-                          <div className="flex justify-between text-[9px] text-gray-600 font-medium">
+                          <div className="flex justify-between text-[10px] text-gray-600 font-medium">
                             <span>{percentualUso.toFixed(0)}% usado</span>
                             <span>{formatarMoeda(limite)}</span>
                           </div>
@@ -352,15 +352,15 @@ export default function Cartoes() {
                       <div className="grid grid-cols-2 gap-2 mb-1">
                         <div className="text-center">
                           <div className="flex items-center justify-center gap-1">
-                            <Calendar className="text-gray-500" size={7} />
-                            <span className="text-[8px] sm:text-[9px] text-gray-600 font-medium uppercase tracking-tighter">Fech. Dia {cartao.fechamento_dia}</span>
+                            <Calendar className="text-gray-500" size={9} />
+                            <span className="text-[10px] sm:text-[11px] text-gray-600 font-medium uppercase tracking-tighter">Fech. Dia {cartao.fechamento_dia}</span>
                           </div>
                         </div>
 
                         <div className="text-center">
                           <div className="flex items-center justify-center gap-1">
-                            <DollarSign className="text-gray-500" size={7} />
-                            <span className="text-[8px] sm:text-[9px] text-gray-600 font-medium uppercase tracking-tighter">Venc. Dia {cartao.vencimento_dia}</span>
+                            <DollarSign className="text-gray-500" size={9} />
+                            <span className="text-[10px] sm:text-[11px] text-gray-600 font-medium uppercase tracking-tighter">Venc. Dia {cartao.vencimento_dia}</span>
                           </div>
                         </div>
                       </div>
@@ -373,9 +373,9 @@ export default function Cartoes() {
                               e.stopPropagation();
                               handleEditCartao(cartao);
                             }}
-                            className="p-1 px-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors flex items-center gap-1 text-[9px] font-medium uppercase tracking-wider"
+                            className="p-1 px-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider"
                           >
-                            <Edit size={11} />
+                            <Edit size={13} />
                             Editar
                           </button>
                           <button
@@ -385,9 +385,9 @@ export default function Cartoes() {
                                 handleDeleteCartao(cartao.id);
                               }
                             }}
-                            className="p-1 px-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-[9px] font-medium uppercase tracking-wider"
+                            className="p-1 px-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider"
                           >
-                            <Trash2 size={11} />
+                            <Trash2 size={13} />
                             Excluir
                           </button>
                         </div>
