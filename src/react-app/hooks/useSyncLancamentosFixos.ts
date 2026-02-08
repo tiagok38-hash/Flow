@@ -75,7 +75,6 @@ export function useSyncLancamentosFixos() {
             }
 
             if (lancamentosParaCriar.length > 0) {
-                console.log(`Gerando ${lancamentosParaCriar.length} lançamentos para ${fixo.nome}`);
                 const { error: insertError } = await supabase
                     .from('lancamentos')
                     .insert(lancamentosParaCriar);
