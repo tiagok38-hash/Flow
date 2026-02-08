@@ -323,7 +323,7 @@ export default function Cartoes() {
                     className={`relative overflow-hidden bg-white/90 backdrop-blur-sm shadow-xl shadow-gray-400/30 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-500/40 cursor-pointer touch-manipulation ${isExpanded ? 'shadow-2xl shadow-gray-500/50 scale-105' : 'active:scale-95'
                       }`}
                     style={{
-                      minHeight: isExpanded ? '260px' : '220px',
+                      minHeight: isExpanded ? '210px' : '176px',
                       transition: 'all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)'
                     }}
                   >
@@ -342,17 +342,17 @@ export default function Cartoes() {
                     )}
 
                     {/* Ações - mostram apenas quando expandido */}
-                    <div className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3 transition-all duration-300 z-20 ${isExpanded ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                    <div className={`absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2 transition-all duration-300 z-20 ${isExpanded ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                       }`}>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleEditCartao(cartao);
                         }}
-                        className="p-3 bg-teal-500 text-white hover:bg-teal-600 rounded-xl shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation"
+                        className="p-2.5 bg-teal-500 text-white hover:bg-teal-600 rounded-xl shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation"
                         title="Editar cartão"
                       >
-                        <Edit size={16} />
+                        <Edit size={14} />
                       </button>
                       <button
                         onClick={(e) => {
@@ -361,17 +361,17 @@ export default function Cartoes() {
                             handleDeleteCartao(cartao.id);
                           }
                         }}
-                        className="p-3 bg-red-500 text-white hover:bg-red-600 rounded-xl shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation"
+                        className="p-2.5 bg-red-500 text-white hover:bg-red-600 rounded-xl shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation"
                         title="Excluir cartão"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
 
                     {/* Conteúdo do cartão - otimizado para iPhone */}
-                    <div className={`flex flex-col h-full p-3 sm:p-4 transition-all duration-300 ${isExpanded ? 'pb-16' : 'pb-4'}`}>
+                    <div className={`flex flex-col h-full p-3 transition-all duration-300 ${isExpanded ? 'pb-14' : 'pb-4'}`}>
                       {/* Header - responsivo para iPhone */}
-                      <div className="flex justify-between items-start mb-3 pt-1">
+                      <div className="flex justify-between items-start mb-2 pt-0.5">
                         <div className="flex items-center gap-2 flex-1">
                           <div className={`p-2 bg-gradient-to-r ${corCartao} rounded-lg shadow-sm`}>
                             <CreditCard className={isCorClara ? "text-gray-700" : "text-white"} size={14} />
@@ -392,13 +392,13 @@ export default function Cartoes() {
 
                       {/* Barra de progresso do limite */}
                       {limite > 0 && (
-                        <div className="mb-3">
-                          <div className="w-full bg-gray-100 rounded-full h-1.5 mb-2">
-                            <div className={`h-1.5 rounded-full transition-all duration-500 ${percentualUso >= 90 ? 'bg-gradient-to-r from-orange-400 to-red-400' : percentualUso >= 70 ? 'bg-gradient-to-r from-yellow-400 to-orange-400' : 'bg-gradient-to-r from-teal-400 to-cyan-400'}`} style={{
+                        <div className="mb-2">
+                          <div className="w-full bg-gray-100 rounded-full h-1 mb-1.5">
+                            <div className={`h-1 rounded-full transition-all duration-500 ${percentualUso >= 90 ? 'bg-gradient-to-r from-orange-400 to-red-400' : percentualUso >= 70 ? 'bg-gradient-to-r from-yellow-400 to-orange-400' : 'bg-gradient-to-r from-teal-400 to-cyan-400'}`} style={{
                               width: `${Math.min(percentualUso, 100)}%`
                             }} />
                           </div>
-                          <div className="flex justify-between text-sm text-gray-600 font-medium">
+                          <div className="flex justify-between text-[11px] text-gray-600 font-medium">
                             <span>{percentualUso.toFixed(0)}% usado</span>
                             <span>{formatarMoeda(limite)}</span>
                           </div>
@@ -406,25 +406,25 @@ export default function Cartoes() {
                       )}
 
                       {/* Informações de datas - compacto para iPhone */}
-                      <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-2">
+                      <div className="grid grid-cols-2 gap-2 mb-1.5">
                         <div className="text-center">
-                          <div className="flex items-center justify-center gap-1 mb-1">
-                            <Calendar className="text-gray-500" size={10} />
-                            <span className="text-xs sm:text-sm text-gray-600 font-medium">Fechamento</span>
+                          <div className="flex items-center justify-center gap-1 mb-0.5">
+                            <Calendar className="text-gray-500" size={9} />
+                            <span className="text-[10px] sm:text-xs text-gray-600 font-medium uppercase tracking-tighter">Fechamento</span>
                           </div>
-                          <p className="text-xs sm:text-sm font-semibold text-gray-900">Dia {cartao.fechamento_dia}</p>
-                          <p className="text-xs text-gray-500 font-light">
+                          <p className="text-xs font-semibold text-gray-900 leading-tight">Dia {cartao.fechamento_dia}</p>
+                          <p className="text-[9px] text-gray-500 font-light">
                             {diasFechamento === 0 ? 'Hoje' : `${diasFechamento} dias`}
                           </p>
                         </div>
 
                         <div className="text-center">
-                          <div className="flex items-center justify-center gap-1 mb-1">
-                            <DollarSign className="text-gray-500" size={10} />
-                            <span className="text-xs sm:text-sm text-gray-600 font-medium">Vencimento</span>
+                          <div className="flex items-center justify-center gap-1 mb-0.5">
+                            <DollarSign className="text-gray-500" size={9} />
+                            <span className="text-[10px] sm:text-xs text-gray-600 font-medium uppercase tracking-tighter">Vencimento</span>
                           </div>
-                          <p className="text-xs sm:text-sm font-semibold text-gray-900">Dia {cartao.vencimento_dia}</p>
-                          <p className="text-xs text-gray-500 font-light">
+                          <p className="text-xs font-semibold text-gray-900 leading-tight">Dia {cartao.vencimento_dia}</p>
+                          <p className="text-[9px] text-gray-500 font-light">
                             {diasVencimento === 0 ? 'Hoje' : `${diasVencimento} dias`}
                           </p>
                         </div>
