@@ -10,7 +10,7 @@
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   body {
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
@@ -35,6 +35,15 @@
   input[type="number"] {
     -moz-appearance: textfield;
   }
+
+  input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    display: block;
+    width: 100%;
+    min-height: 1.5em;
+    /* Ensure it has enough height even if empty */
+  }
 }
 
 :root {
@@ -47,8 +56,10 @@
 }
 
 * {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* Ensure fixed positioning works correctly on all devices */

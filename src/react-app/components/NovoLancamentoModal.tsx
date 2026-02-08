@@ -388,7 +388,7 @@ export default function NovoLancamentoModal({
               type="date"
               value={formData.data}
               onChange={(e) => setFormData({ ...formData, data: e.target.value })}
-              className="w-full px-4 py-3 bg-white/70 border border-gray-300/70 rounded-2xl focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-200 font-light"
+              className="w-full block px-4 py-3 bg-white/70 border border-gray-300/70 rounded-2xl focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all duration-200 font-light appearance-none"
               required
             />
           </div>
