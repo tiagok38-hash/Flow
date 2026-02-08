@@ -163,21 +163,18 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
     const receitasPorCategoria: Record<string, number> = {};
 
     lancamentos.forEach(l => {
+      const val = Math.abs(Number(l.valor));
       if (l.tipo === 'receita') {
-        totalReceitas += Number(l.valor);
-      } else if (l.tipo === 'despesa') {
-        const val = Math.abs(Number(l.valor));
-        totalDespesas += val;
-
+        totalReceitas += val;
         if (l.categoria_id) {
-          gastosPorCategoria[l.categoria_id] = (gastosPorCategoria[l.categoria_id] || 0) + val;
+          receitasPorCategoria[l.categoria_id] = (receitasPorCategoria[l.categoria_id] || 0) + val;
           nomesCategorias[l.categoria_id] = l.categoria_nome || 'Sem Categoria';
           iconesCategorias[l.categoria_id] = l.categoria_icone || 'circle';
         }
-      } else if (l.tipo === 'receita') {
-        const val = Math.abs(Number(l.valor));
+      } else if (l.tipo === 'despesa') {
+        totalDespesas += val;
         if (l.categoria_id) {
-          receitasPorCategoria[l.categoria_id] = (receitasPorCategoria[l.categoria_id] || 0) + val;
+          gastosPorCategoria[l.categoria_id] = (gastosPorCategoria[l.categoria_id] || 0) + val;
           nomesCategorias[l.categoria_id] = l.categoria_nome || 'Sem Categoria';
           iconesCategorias[l.categoria_id] = l.categoria_icone || 'circle';
         }
