@@ -110,9 +110,9 @@ export default function Historico() {
         <FilterChips selectedPeriodo={periodo} onPeriodoChange={setPeriodo} />
 
         {/* Filtros de tipo e busca */}
-        <div className="mb-6 space-y-3">
+        <div className="mb-6 flex flex-col md:flex-row md:items-center gap-4">
           {/* Filtro de tipo */}
-          <div className="flex bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-1.5 shadow-inner w-full max-w-md">
+          <div className="flex bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-1.5 shadow-inner w-full md:max-w-md">
             <button
               onClick={() => setFiltroTipo('todos')}
               className={`flex-1 py-2 px-4 rounded-xl font-light transition-all duration-300 text-sm ${filtroTipo === 'todos'
@@ -143,7 +143,7 @@ export default function Historico() {
           </div>
 
           {/* Barra de busca */}
-          <div className="relative w-full max-w-md">
+          <div className="relative w-full md:flex-1 md:max-w-md">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
             </div>
@@ -152,7 +152,7 @@ export default function Historico() {
               placeholder="Buscar lançamentos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-300/70 rounded-2xl focus:ring-2 focus:ring-teal-400 focus:border-transparent text-sm font-light placeholder-gray-400"
+              className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-300/70 rounded-2xl focus:ring-2 focus:ring-teal-400 focus:border-transparent text-sm font-light placeholder-gray-400 shadow-sm"
             />
           </div>
         </div>
