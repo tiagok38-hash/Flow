@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/react-app/supabaseClient';
 import { Navigate } from 'react-router';
-import { LogIn, UserPlus, Wallet, Mail, Lock } from 'lucide-react';
+import { LogIn, UserPlus, Wallet, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import Button from '@/react-app/components/Button';
 
 export default function Login() {
@@ -9,6 +9,7 @@ export default function Login() {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -133,14 +134,21 @@ export default function Login() {
             <div className="relative">
               <Lock className="absolute left-3 top-3 text-gray-400" size={18} />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Sua senha"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-colors"
+                className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-colors"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
             <Button

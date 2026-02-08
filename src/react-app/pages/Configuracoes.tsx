@@ -6,7 +6,8 @@ import {
   useGastosPorCategoria,
   excluirCategoria,
   excluirLancamentoFixo,
-  formatarMoeda
+  formatarMoeda,
+  atualizarCategoria
 } from '@/react-app/hooks/useApi';
 import Card from '@/react-app/components/Card';
 import Button from '@/react-app/components/Button';
@@ -44,6 +45,18 @@ export default function Configuracoes() {
       } catch (error) {
         console.error('Erro ao excluir categoria:', error);
         alert('Erro ao excluir categoria');
+      }
+    }
+  };
+
+  const handleDeleteLimit = async (categoria: any) => {
+    if (confirm(`Remover o limite de gastos da categoria ${categoria.nome}?`)) {
+      try {
+        await atualizarCategoria(categoria.id, { limite_mensal: null });
+        refetchCategorias();
+      } catch (error) {
+        console.error('Erro ao remover limite:', error);
+        alert('Erro ao remover limite');
       }
     }
   };
@@ -296,23 +309,41 @@ export default function Configuracoes() {
                   const atingido = restante <= 0;
 
                   return (
-                    <div key={categoria.id} className="group flex items-center justify-between p-3 bg-gray-50/70 rounded-2xl hover:bg-gray-100/70 transition-all duration-200">
+                    <div key={categoria.id} className="group flex items-center justify-between p-3 bg-gray-50/70 rounded-2xl hover:bg-gray-100/70 transition-all duration-200 relative">
                       <div className="flex items-center gap-3 w-full">
                         <div className="p-2.5 bg-white rounded-xl shadow-sm">
                           <Icon name={categoria.icone} size={16} className="text-gray-600" />
                         </div>
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center mb-1">
-                            <p className="font-medium text-gray-900 text-sm">{categoria.nome}</p>
-                            {atingido && (
-                              <span className="text-[10px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100 animate-pulse">
-                                ⚠️ Cuidado: limite atingido!
-                              </span>
-                            )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start mb-1">
+                            <div className="flex flex-col">
+                              <p className="font-medium text-gray-900 text-sm">{categoria.nome}</p>
+                              {atingido && (
+                                <span className="text-[10px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100 animate-pulse mt-0.5 w-fit">
+                                  ⚠️ Cuidado: limite atingido!
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={() => handleEditCategoria(categoria)}
+                                className="p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                                title="Editar limite"
+                              >
+                                <Edit size={14} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteLimit(categoria)}
+                                className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Remover limite"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
                           </div>
 
                           <div className="space-y-1">
-                            {/* Barra de progresso visual */}
                             <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all duration-500 ${atingido ? 'bg-red-500' : percentual > 80 ? 'bg-orange-400' : 'bg-teal-400'}`}
@@ -320,20 +351,21 @@ export default function Configuracoes() {
                               />
                             </div>
 
-                            <div className="flex justify-between items-center text-xs">
-                              <span className={atingido ? "text-red-600 font-bold" : "text-gray-600"}>
+                            <div className="flex justify-between items-end text-xs">
+                              <span className={atingido ? "text-red-600 font-bold" : "text-gray-600 font-medium"}>
                                 Gasto: {formatarMoeda(gastoAtual)}
                               </span>
 
-                              {!atingido ? (
-                                <span className="text-teal-600 font-medium">
-                                  Restante: {formatarMoeda(restante)}
-                                </span>
-                              ) : (
+                              <div className="flex flex-col items-end">
+                                {!atingido && (
+                                  <span className="text-teal-600 font-medium mb-0.5">
+                                    Restante: {formatarMoeda(restante)}
+                                  </span>
+                                )}
                                 <span className="text-gray-400 text-[10px]">
                                   Limite: {formatarMoeda(limite)}
                                 </span>
-                              )}
+                              </div>
                             </div>
                           </div>
                         </div>
