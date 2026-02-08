@@ -43,7 +43,7 @@ export default function Navigation() {
     { to: '/', icon: Home, label: 'Início' },
     { to: '/historico', icon: History, label: 'Histórico' },
     { to: '/cartoes', icon: CreditCard, label: 'Cartões' },
-    { to: '/configuracoes', icon: Settings, label: 'Ajustes' },
+    { to: '/configuracoes', icon: Settings, label: 'Configurações' },
   ];
 
   return (
@@ -68,8 +68,8 @@ export default function Navigation() {
                 key={link.to}
                 to={link.to}
                 className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 group ${isActive
-                    ? 'bg-white text-teal-600 shadow-lg shadow-black/5 scale-105'
-                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                  ? 'bg-white text-teal-600 shadow-lg shadow-black/5 scale-105'
+                  : 'text-white/80 hover:bg-white/10 hover:text-white'
                   }`}
               >
                 <Icon size={22} className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
@@ -130,8 +130,8 @@ export default function Navigation() {
               <Link
                 to="/"
                 className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-300 transform active:scale-95 active:bg-teal-50 hover:scale-105 ${location.pathname === '/'
-                    ? 'text-teal-500 bg-teal-50 scale-105'
-                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'text-teal-500 bg-teal-50 scale-105'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   }`}
               >
                 <Home size={24} className="sm:w-7 sm:h-7 transition-transform duration-300" />
@@ -140,8 +140,8 @@ export default function Navigation() {
               <Link
                 to="/historico"
                 className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-300 transform active:scale-95 active:bg-teal-50 hover:scale-105 ${location.pathname === '/historico'
-                    ? 'text-teal-500 bg-teal-50 scale-105'
-                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'text-teal-500 bg-teal-50 scale-105'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   }`}
               >
                 <History size={24} className="sm:w-7 sm:h-7 transition-transform duration-300" />
@@ -158,8 +158,8 @@ export default function Navigation() {
               <Link
                 to="/cartoes"
                 className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-300 transform active:scale-95 active:bg-teal-50 hover:scale-105 ${location.pathname === '/cartoes'
-                    ? 'text-teal-500 bg-teal-50 scale-105'
-                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'text-teal-500 bg-teal-50 scale-105'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   }`}
               >
                 <CreditCard size={24} className="sm:w-7 sm:h-7 transition-transform duration-300" />
@@ -168,8 +168,8 @@ export default function Navigation() {
               <Link
                 to="/configuracoes"
                 className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-300 transform active:scale-95 active:bg-teal-50 hover:scale-105 ${location.pathname === '/configuracoes'
-                    ? 'text-teal-500 bg-teal-50 scale-105'
-                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'text-teal-500 bg-teal-50 scale-105'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   }`}
               >
                 <Settings size={24} className="sm:w-7 sm:h-7 transition-transform duration-300" />
