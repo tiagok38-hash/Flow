@@ -320,7 +320,7 @@ export default function NovoLancamentoModal({
                     <button
                       type="button"
                       onClick={() => {
-                        console.log('[iPhone Debug] Tentando recarregar categorias vazias...');
+
                         refetchCategorias();
                       }}
                       className="w-full mt-2 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl text-sm font-medium hover:bg-yellow-200 transition-colors"
