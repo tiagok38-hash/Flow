@@ -287,7 +287,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Card Limite de gastos por categoria */}
-          <Link to="/configuracoes">
+          <Link to={categorias?.some(c => c.limite_mensal && c.limite_mensal > 0) ? "/configuracoes" : "/configuracoes?action=novo-limite"}>
             <Card className="bg-white/90 backdrop-blur-sm shadow-2xl shadow-gray-400/30 animate-slide-up-delay-2 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer transform">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200">

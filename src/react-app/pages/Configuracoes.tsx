@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router';
 import { Settings, Plus, Edit, Trash2, Target, Calendar } from 'lucide-react';
 import {
   useCategorias,
@@ -31,6 +32,19 @@ export default function Configuracoes() {
   const [categoriasExpanded, setCategoriasExpanded] = useState(false);
   const [gastosFixosExpanded, setGastosFixosExpanded] = useState(false);
   const [limitesExpanded, setLimitesExpanded] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const action = searchParams.get('action');
+    if (action === 'novo-limite') {
+      setLimiteModalOpen(true);
+      // Limpar o parâmetro da URL de forma segura
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.delete('action');
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleEditCategoria = (categoria: any) => {
     setEditingCategoria(categoria);
