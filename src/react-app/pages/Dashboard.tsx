@@ -296,69 +296,65 @@ export default function Dashboard() {
                 <h3 className="text-lg font-light text-gray-900">Limite de gastos por categoria</h3>
               </div>
               {loadingGastos ? (
-                <div className="flex items-center justify-center h-64">
+                <div className="flex items-center justify-center h-[200px]">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-400"></div>
                 </div>
-              ) : gastosPorCategoria && gastosPorCategoria.length > 0 ? (
+              ) : (categorias?.filter(c => c.limite_mensal && c.limite_mensal > 0).length || 0) > 0 ? (
                 <div className="space-y-6">
-                  {gastosPorCategoria.map((item) => {
-                    const categoria = categorias?.find(c => c.id === item.categoria_id);
-                    const limite = categoria?.limite_mensal || 0;
-                    const percentual = limite > 0 ? (item.total / limite) * 100 : 0;
-                    const atingido = limite > 0 && item.total >= limite;
-                    const restante = limite > 0 ? Math.max(0, limite - item.total) : 0;
+                  {categorias?.filter(c => c.limite_mensal && c.limite_mensal > 0).map((categoria) => {
+                    const gastoItem = gastosPorCategoria?.find(g => g.categoria_id === categoria.id);
+                    const totalGasto = gastoItem?.total || 0;
+                    const limite = categoria.limite_mensal || 0;
+                    const percentual = (totalGasto / limite) * 100;
+                    const atingido = totalGasto >= limite;
+                    const restante = Math.max(0, limite - totalGasto);
 
                     return (
-                      <div key={item.categoria_id} className="space-y-2">
+                      <div key={categoria.id} className="space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3 min-w-0 flex-1">
                             <div className="p-2.5 rounded-xl bg-gray-50">
-                              <Icon name={item.categoria_icone} size={16} className="text-gray-600" />
+                              <Icon name={categoria.icone} size={16} className="text-gray-600" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="font-medium text-gray-900 truncate text-sm">
-                                {item.categoria_nome}
+                                {categoria.nome}
                               </p>
                               <div className="flex items-center gap-2">
                                 <p className="text-xs text-gray-500 font-light">
-                                  {valoresVisiveis ? formatarMoeda(item.total) : '••••••'}
+                                  {valoresVisiveis ? formatarMoeda(totalGasto) : '••••••'}
                                 </p>
-                                {limite > 0 && (
-                                  <span className="text-[10px] text-gray-400">
-                                    / {formatarMoeda(limite)}
-                                  </span>
-                                )}
+                                <span className="text-[10px] text-gray-400">
+                                  / {formatarMoeda(limite)}
+                                </span>
                               </div>
                             </div>
                           </div>
-                          {limite > 0 && (
-                            <div className="text-right">
-                              <p className={`text-[10px] font-medium ${atingido ? 'text-red-500' : 'text-teal-600'}`}>
-                                {atingido ? 'Limite atingido' : `Restante: ${valoresVisiveis ? formatarMoeda(restante) : '••••'}`}
-                              </p>
-                            </div>
-                          )}
+                          <div className="text-right">
+                            <p className={`text-[10px] font-medium ${atingido ? 'text-red-500' : 'text-teal-600'}`}>
+                              {atingido ? 'Limite atingido' : `Restante: ${valoresVisiveis ? formatarMoeda(restante) : '••••'}`}
+                            </p>
+                          </div>
                         </div>
 
-                        {limite > 0 && (
-                          <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                            <div
-                              className={`h-full transition-all duration-700 rounded-full ${atingido ? 'bg-red-500' : percentual > 80 ? 'bg-orange-400' : 'bg-teal-400'
-                                }`}
-                              style={{ width: `${Math.min(percentual, 100)}%` }}
-                            />
-                          </div>
-                        )}
+                        <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-700 rounded-full ${atingido ? 'bg-red-500' : percentual > 80 ? 'bg-orange-400' : 'bg-teal-400'
+                              }`}
+                            style={{ width: `${Math.min(percentual, 100)}%` }}
+                          />
+                        </div>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <div className="text-center py-16">
+                <div className="text-center py-10">
                   <div className="p-4 rounded-2xl bg-gray-100/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <TrendingDown className="text-gray-400" size={24} />
+                    <Target className="text-gray-400" size={24} />
                   </div>
-                  <p className="text-gray-500 font-light">Nenhum gasto aconteceu no período selecionado</p>
+                  <p className="text-gray-900 font-medium mb-1">Criar limite de gastos</p>
+                  <p className="text-gray-500 font-light text-xs px-6">Você ainda não definiu limites para suas categorias.</p>
                 </div>
               )}
             </Card>
