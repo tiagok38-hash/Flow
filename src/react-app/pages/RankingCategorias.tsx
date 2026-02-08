@@ -83,7 +83,7 @@ export default function RankingCategorias() {
               <ArrowLeft size={20} />
             </Link>
             <div>
-              <h1 className="text-xl font-light text-gray-900">Ranking de Categorias</h1>
+              <h1 className="text-xl font-light text-gray-900">Ranking de categorias (despesas)</h1>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function RankingCategorias() {
                     <div
                       key={categoria.categoria_id}
                       className={`relative overflow-hidden bg-gray-50/70 rounded-2xl sm:rounded-3xl p-3 sm:p-6 transition-all duration-300 hover:scale-[1.02] animate-slide-up ${posicao === 1 ? 'sm:order-2 ring-2 ring-yellow-400/50 bg-yellow-50/70' :
-                          posicao === 2 ? 'sm:order-1' : 'sm:order-3'
+                        posicao === 2 ? 'sm:order-1' : 'sm:order-3'
                         }`}
                       style={{
                         animationDelay: `${index * 150}ms`
@@ -188,8 +188,8 @@ export default function RankingCategorias() {
                   <button
                     onClick={() => setTipoGrafico('pizza')}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${tipoGrafico === 'pizza'
-                        ? 'bg-white text-teal-600 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-800'
+                      ? 'bg-white text-teal-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800'
                       }`}
                   >
                     <PieChart size={16} />
@@ -198,8 +198,8 @@ export default function RankingCategorias() {
                   <button
                     onClick={() => setTipoGrafico('barras')}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${tipoGrafico === 'barras'
-                        ? 'bg-white text-teal-600 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-800'
+                      ? 'bg-white text-teal-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800'
                       }`}
                   >
                     <BarChart3 size={16} />
