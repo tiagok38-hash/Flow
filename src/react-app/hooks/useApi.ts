@@ -166,18 +166,16 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
       const val = Math.abs(Number(l.valor));
       if (l.tipo === 'receita') {
         totalReceitas += val;
-        if (l.categoria_id) {
-          receitasPorCategoria[l.categoria_id] = (receitasPorCategoria[l.categoria_id] || 0) + val;
-          nomesCategorias[l.categoria_id] = l.categoria_nome || 'Sem Categoria';
-          iconesCategorias[l.categoria_id] = l.categoria_icone || 'circle';
-        }
+        const catId = l.categoria_id || 'sem-categoria';
+        receitasPorCategoria[catId] = (receitasPorCategoria[catId] || 0) + val;
+        nomesCategorias[catId] = l.categoria_nome || 'Sem Categoria';
+        iconesCategorias[catId] = l.categoria_icone || 'circle';
       } else if (l.tipo === 'despesa') {
         totalDespesas += val;
-        if (l.categoria_id) {
-          gastosPorCategoria[l.categoria_id] = (gastosPorCategoria[l.categoria_id] || 0) + val;
-          nomesCategorias[l.categoria_id] = l.categoria_nome || 'Sem Categoria';
-          iconesCategorias[l.categoria_id] = l.categoria_icone || 'circle';
-        }
+        const catId = l.categoria_id || 'sem-categoria';
+        gastosPorCategoria[catId] = (gastosPorCategoria[catId] || 0) + val;
+        nomesCategorias[catId] = l.categoria_nome || 'Sem Categoria';
+        iconesCategorias[catId] = l.categoria_icone || 'circle';
       }
     });
 
@@ -230,17 +228,17 @@ export function useGastosPorCategoria(periodo: string = 'mes-atual') {
     const agrupado: Record<string, GastoPorCategoria> = {};
 
     lancamentos.filter(l => l.tipo === 'despesa').forEach(l => {
-      if (!l.categoria_id) return;
+      const catId = l.categoria_id || 'sem-categoria';
 
-      if (!agrupado[l.categoria_id]) {
-        agrupado[l.categoria_id] = {
-          categoria_id: l.categoria_id,
-          categoria_nome: l.categoria_nome || 'Desconhecida',
+      if (!agrupado[catId]) {
+        agrupado[catId] = {
+          categoria_id: catId,
+          categoria_nome: l.categoria_nome || 'Sem Categoria',
           categoria_icone: l.categoria_icone || 'circle',
           total: 0
         };
       }
-      agrupado[l.categoria_id].total += Math.abs(Number(l.valor));
+      agrupado[catId].total += Math.abs(Number(l.valor));
     });
 
     return Object.values(agrupado).sort((a, b) => b.total - a.total);
@@ -258,17 +256,17 @@ export function useReceitasPorCategoria(periodo: string = 'mes-atual') {
     const agrupado: Record<string, GastoPorCategoria> = {};
 
     lancamentos.filter(l => l.tipo === 'receita').forEach(l => {
-      if (!l.categoria_id) return;
+      const catId = l.categoria_id || 'sem-categoria';
 
-      if (!agrupado[l.categoria_id]) {
-        agrupado[l.categoria_id] = {
-          categoria_id: l.categoria_id,
-          categoria_nome: l.categoria_nome || 'Desconhecida',
+      if (!agrupado[catId]) {
+        agrupado[catId] = {
+          categoria_id: catId,
+          categoria_nome: l.categoria_nome || 'Sem Categoria',
           categoria_icone: l.categoria_icone || 'circle',
           total: 0
         };
       }
-      agrupado[l.categoria_id].total += Math.abs(Number(l.valor));
+      agrupado[catId].total += Math.abs(Number(l.valor));
     });
 
     return Object.values(agrupado).sort((a, b) => b.total - a.total);
