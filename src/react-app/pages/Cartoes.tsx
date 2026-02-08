@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CreditCard, Plus, Calendar, DollarSign, AlertTriangle, Edit, Trash2, Trophy } from 'lucide-react';
+import { CreditCard, Plus, Calendar, DollarSign, AlertTriangle, Edit, Trash2, Trophy, ChevronDown } from 'lucide-react';
 import { useCartoes, useGastosCartoes, formatarMoeda, excluirCartao } from '@/react-app/hooks/useApi';
 import Card from '@/react-app/components/Card';
 import Button from '@/react-app/components/Button';
@@ -445,8 +445,9 @@ export default function Cartoes() {
 
                       {/* Indicador de toque no mobile */}
                       {!isExpanded && (
-                        <div className="text-center mt-auto pt-1 pointer-events-none">
-                          <p className="text-xs text-gray-400 font-light">Toque para ver opções</p>
+                        <div className="text-center mt-auto pt-2 pb-1 pointer-events-none flex flex-col items-center gap-0.5">
+                          <p className="text-[10px] sm:text-xs text-gray-400 font-light uppercase tracking-wider">Toque para ver opções</p>
+                          <ChevronDown size={12} className="text-gray-300 animate-bounce" />
                         </div>
                       )}
                     </div>
