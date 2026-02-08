@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CreditCard, Plus, Calendar, DollarSign, AlertTriangle, Edit, Trash2, Trophy, ChevronDown } from 'lucide-react';
+import { CreditCard, Plus, Calendar, DollarSign, AlertTriangle, Edit, Trash2, Trophy } from 'lucide-react';
 import { useCartoes, useGastosCartoes, formatarMoeda, excluirCartao } from '@/react-app/hooks/useApi';
 import Card from '@/react-app/components/Card';
 import Button from '@/react-app/components/Button';
@@ -11,7 +11,6 @@ export default function Cartoes() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingCartao, setEditingCartao] = useState<any>(null);
   const [rankingExpanded, setRankingExpanded] = useState(false);
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   const {
     data: cartoes,
@@ -49,9 +48,7 @@ export default function Cartoes() {
     }
   };
 
-  const handleCardTouch = (cartaoId: string) => {
-    setExpandedCard(expandedCard === cartaoId ? null : cartaoId);
-  };
+
 
 
 
@@ -314,17 +311,12 @@ export default function Cartoes() {
               const corCartao = coresCartao[corSelecionada as keyof typeof coresCartao] || coresCartao.azul;
               const isCorClara = corSelecionada === 'branco' || corSelecionada === 'amarelo' || corSelecionada === 'azul-claro';
 
-              const isExpanded = expandedCard === cartao.id;
-
               return (
                 <div key={cartao.id} className="animate-slide-up" style={{ animationDelay: `${index * 60}ms` }}>
                   <Card
-                    onClick={() => handleCardTouch(cartao.id)}
-                    className={`relative overflow-hidden bg-white/90 backdrop-blur-sm shadow-xl shadow-gray-400/30 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-500/40 cursor-pointer touch-manipulation ${isExpanded ? 'shadow-2xl shadow-gray-500/50 scale-105' : 'active:scale-95'
-                      }`}
+                    className="relative overflow-hidden bg-white/90 backdrop-blur-sm shadow-xl shadow-gray-400/30 transition-all duration-200 hover:shadow-2xl hover:shadow-gray-500/40 hover:scale-[1.02]"
                     style={{
-                      minHeight: isExpanded ? '210px' : '176px',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)'
+                      minHeight: '190px',
                     }}
                   >
                     {/* Logo da bandeira - otimizado para iPhone */}
@@ -341,35 +333,10 @@ export default function Cartoes() {
                       </div>
                     )}
 
-                    {/* Ações - mostram apenas quando expandido */}
-                    <div className={`absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2 transition-all duration-300 z-20 ${isExpanded ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-                      }`}>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditCartao(cartao);
-                        }}
-                        className="p-2.5 bg-teal-500 text-white hover:bg-teal-600 rounded-xl shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation"
-                        title="Editar cartão"
-                      >
-                        <Edit size={14} />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (confirm(`Tem certeza que deseja excluir o cartão ${cartao.nome}?`)) {
-                            handleDeleteCartao(cartao.id);
-                          }
-                        }}
-                        className="p-2.5 bg-red-500 text-white hover:bg-red-600 rounded-xl shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 touch-manipulation"
-                        title="Excluir cartão"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+
 
                     {/* Conteúdo do cartão - otimizado para iPhone */}
-                    <div className={`flex flex-col h-full p-3 transition-all duration-300 ${isExpanded ? 'pb-14' : 'pb-4'}`}>
+                    <div className="flex flex-col h-full p-3">
                       {/* Header - responsivo para iPhone */}
                       <div className="flex justify-between items-start mb-2 pt-0.5">
                         <div className="flex items-center gap-2 flex-1">
@@ -430,25 +397,40 @@ export default function Cartoes() {
                         </div>
                       </div>
 
-                      {/* Alerta de limite atingido - ampliado */}
-                      {percentualUso >= 90 && (
-                        <div className="mt-auto p-2 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg">
-                          <div className="flex items-center justify-center gap-1">
-                            <AlertTriangle className="text-orange-500" size={14} />
-                            <span className="text-sm text-orange-700 font-semibold">
-                              {percentualUso.toFixed(0)}% do limite!
-                            </span>
-                          </div>
+                      {/* Rodapé com botões de ação */}
+                      <div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100/50">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditCartao(cartao);
+                            }}
+                            className="p-1.5 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider"
+                          >
+                            <Edit size={12} />
+                            Editar
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm(`Tem certeza que deseja excluir o cartão ${cartao.nome}?`)) {
+                                handleDeleteCartao(cartao.id);
+                              }
+                            }}
+                            className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider"
+                          >
+                            <Trash2 size={12} />
+                            Excluir
+                          </button>
                         </div>
-                      )}
 
-                      {/* Indicador de toque no mobile */}
-                      {!isExpanded && (
-                        <div className="absolute bottom-2 left-0 right-0 pointer-events-none flex flex-col items-center gap-0.5">
-                          <p className="text-[9px] sm:text-xs text-gray-400 font-light uppercase tracking-widest">Toque para ver opções</p>
-                          <ChevronDown size={14} className="text-gray-400 animate-bounce" />
-                        </div>
-                      )}
+                        {percentualUso >= 90 && (
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-orange-50 border border-orange-100 rounded-lg">
+                            <AlertTriangle className="text-orange-500" size={10} />
+                            <span className="text-[9px] text-orange-700 font-bold uppercase tracking-tight">Limite!</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 </div>
