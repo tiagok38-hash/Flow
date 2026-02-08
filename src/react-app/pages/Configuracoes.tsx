@@ -3,6 +3,7 @@ import { Settings, Plus, Edit, Trash2, Target, Calendar } from 'lucide-react';
 import {
   useCategorias,
   useLancamentosFixos,
+  useGastosPorCategoria,
   excluirCategoria,
   excluirLancamentoFixo,
   formatarMoeda
@@ -17,6 +18,7 @@ import LancamentoFixoModal from '@/react-app/components/LancamentoFixoModal';
 export default function Configuracoes() {
   const { data: categorias, loading: loadingCategorias, refetch: refetchCategorias } = useCategorias();
   const { data: lancamentosFixos, loading: loadingFixos, refetch: refetchFixos } = useLancamentosFixos();
+  const { data: gastosPorCategoria } = useGastosPorCategoria();
 
   const [categoriaModalOpen, setCategoriaModalOpen] = useState(false);
   const [limiteModalOpen, setLimiteModalOpen] = useState(false);
@@ -286,21 +288,59 @@ export default function Configuracoes() {
 
             <div className="space-y-3">
               {(categorias?.filter(c => c.limite_mensal)?.length || 0) > 0 ? (
-                (limitesExpanded ? categorias?.filter(c => c.limite_mensal) : categorias?.filter(c => c.limite_mensal)?.slice(0, 2))?.map((categoria) => (
-                  <div key={categoria.id} className="group flex items-center justify-between p-3 bg-gray-50/70 rounded-2xl hover:bg-gray-100/70 transition-all duration-200">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-white rounded-xl shadow-sm">
-                        <Icon name={categoria.icone} size={16} className="text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900 text-sm">{categoria.nome}</p>
-                        <p className="text-xs text-teal-500 font-light">
-                          Limite: {formatarMoeda(categoria.limite_mensal || 0)}
-                        </p>
+                (limitesExpanded ? categorias?.filter(c => c.limite_mensal) : categorias?.filter(c => c.limite_mensal)?.slice(0, 2))?.map((categoria) => {
+                  const gastoAtual = gastosPorCategoria?.find(g => g.categoria_id === categoria.id)?.total || 0;
+                  const limite = categoria.limite_mensal || 0;
+                  const restante = limite - gastoAtual;
+                  const percentual = limite > 0 ? (gastoAtual / limite) * 100 : 0;
+                  const atingido = restante <= 0;
+
+                  return (
+                    <div key={categoria.id} className="group flex items-center justify-between p-3 bg-gray-50/70 rounded-2xl hover:bg-gray-100/70 transition-all duration-200">
+                      <div className="flex items-center gap-3 w-full">
+                        <div className="p-2.5 bg-white rounded-xl shadow-sm">
+                          <Icon name={categoria.icone} size={16} className="text-gray-600" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center mb-1">
+                            <p className="font-medium text-gray-900 text-sm">{categoria.nome}</p>
+                            {atingido && (
+                              <span className="text-[10px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100 animate-pulse">
+                                ⚠️ Cuidado: limite atingido!
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="space-y-1">
+                            {/* Barra de progresso visual */}
+                            <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all duration-500 ${atingido ? 'bg-red-500' : percentual > 80 ? 'bg-orange-400' : 'bg-teal-400'}`}
+                                style={{ width: `${Math.min(percentual, 100)}%` }}
+                              />
+                            </div>
+
+                            <div className="flex justify-between items-center text-xs">
+                              <span className={atingido ? "text-red-600 font-bold" : "text-gray-600"}>
+                                Gasto: {formatarMoeda(gastoAtual)}
+                              </span>
+
+                              {!atingido ? (
+                                <span className="text-teal-600 font-medium">
+                                  Restante: {formatarMoeda(restante)}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400 text-[10px]">
+                                  Limite: {formatarMoeda(limite)}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <div className="text-center py-8">
                   <div className="p-3 rounded-2xl bg-gray-100/50 w-12 h-12 mx-auto mb-3 flex items-center justify-center">
