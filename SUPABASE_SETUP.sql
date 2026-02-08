@@ -103,6 +103,7 @@ create table if not exists public.lancamentos_fixos (
   dia_semana integer, -- 0 (Dom) a 6 (Sab)
   dia_mes_1 integer, -- 1 a 31
   dia_mes_2 integer, -- 1 a 31 (para quinzenal)
+  ultimo_processamento date, -- Data do último lançamento gerado
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );

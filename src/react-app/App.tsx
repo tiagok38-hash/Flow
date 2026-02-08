@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/react-app/supabaseClient';
 import { ValoresVisiveisProvider } from '@/react-app/hooks/useValoresVisiveis';
 import Navigation from "@/react-app/components/Navigation";
+import SyncManager from "@/react-app/components/SyncManager";
 import Dashboard from "@/react-app/pages/Dashboard";
 import Historico from "@/react-app/pages/Historico";
 import Cartoes from "@/react-app/pages/Cartoes";
@@ -53,6 +54,7 @@ function ProtectedApp() {
 
   return (
     <ValoresVisiveisProvider>
+      <SyncManager />
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-green-50">
         <Navigation />
         {/* Adiciona padding à esquerda no desktop para compensar a sidebar fixa */}
