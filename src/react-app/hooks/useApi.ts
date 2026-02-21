@@ -158,120 +158,86 @@ export function useDashboardStats(periodo: string = 'mes-atual') {
     let totalReceitas = 0;
     let totalDespesas = 0;
     const gastosPorCategoria: Record<string, number> = {};
-    const nomesCategorias: Record<string, string> = {};
-    const iconesCategorias: Record<string, string> = {};
     const receitasPorCategoria: Record<string, number> = {};
+    const infoCategorias: Record<string, { nome: string; icone: string }> = {};
 
     lancamentos.forEach(l => {
       const val = Math.abs(Number(l.valor));
+      const catId = l.categoria_id || 'sem-categoria';
+
+      if (!infoCategorias[catId]) {
+        infoCategorias[catId] = {
+          nome: l.categoria_nome || 'Sem Categoria',
+          icone: l.categoria_icone || 'circle'
+        };
+      }
+
       if (l.tipo === 'receita') {
         totalReceitas += val;
-        const catId = l.categoria_id || 'sem-categoria';
         receitasPorCategoria[catId] = (receitasPorCategoria[catId] || 0) + val;
-        nomesCategorias[catId] = l.categoria_nome || 'Sem Categoria';
-        iconesCategorias[catId] = l.categoria_icone || 'circle';
-      } else if (l.tipo === 'despesa') {
+      } else {
         totalDespesas += val;
-        const catId = l.categoria_id || 'sem-categoria';
         gastosPorCategoria[catId] = (gastosPorCategoria[catId] || 0) + val;
-        nomesCategorias[catId] = l.categoria_nome || 'Sem Categoria';
-        iconesCategorias[catId] = l.categoria_icone || 'circle';
       }
     });
 
-    let maiorGasto = null;
-    let maiorValorGasto = -1;
-
-    Object.entries(gastosPorCategoria).forEach(([id, valor]) => {
-      if (valor > maiorValorGasto) {
-        maiorValorGasto = valor;
-        maiorGasto = {
-          nome: nomesCategorias[id],
-          valor,
-          icone: iconesCategorias[id]
-        };
-      }
-    });
-
-    let maiorReceita = null;
-    let maiorValorReceita = -1;
-
-    Object.entries(receitasPorCategoria).forEach(([id, valor]) => {
-      if (valor > maiorValorReceita) {
-        maiorValorReceita = valor;
-        maiorReceita = {
-          nome: nomesCategorias[id],
-          valor,
-          icone: iconesCategorias[id]
-        };
-      }
-    });
+    const getMaior = (record: Record<string, number>) => {
+      let maiorId = null;
+      let maiorVal = -1;
+      Object.entries(record).forEach(([id, val]) => {
+        if (val > maiorVal) {
+          maiorVal = val;
+          maiorId = id;
+        }
+      });
+      return maiorId ? {
+        nome: infoCategorias[maiorId].nome,
+        valor: maiorVal,
+        icone: infoCategorias[maiorId].icone
+      } : null;
+    };
 
     return {
       saldo_periodo: totalReceitas - totalDespesas,
       total_receitas: totalReceitas,
       total_despesas: totalDespesas,
-      categoria_mais_gasta: maiorGasto,
-      categoria_maior_receita: maiorReceita
+      categoria_mais_gasta: getMaior(gastosPorCategoria),
+      categoria_maior_receita: getMaior(receitasPorCategoria)
     };
   }, [lancamentos]);
 
   return { data: stats, loading, error: null, refetch };
 }
 
+function processarPorCategoria(lancamentos: Lancamento[] | null, tipo: 'receita' | 'despesa'): GastoPorCategoria[] {
+  if (!lancamentos) return [];
+  const agrupado: Record<string, GastoPorCategoria> = {};
+
+  lancamentos.filter(l => l.tipo === tipo).forEach(l => {
+    const catId = l.categoria_id || 'sem-categoria';
+    if (!agrupado[catId]) {
+      agrupado[catId] = {
+        categoria_id: catId,
+        categoria_nome: l.categoria_nome || 'Sem Categoria',
+        categoria_icone: l.categoria_icone || 'circle',
+        total: 0
+      };
+    }
+    agrupado[catId].total += Math.abs(Number(l.valor));
+  });
+
+  return Object.values(agrupado).sort((a, b) => b.total - a.total);
+}
+
 export function useGastosPorCategoria(periodo: string = 'mes-atual') {
   const { data: lancamentos, loading, refetch } = useLancamentos(periodo);
-
-  const gastos = useMemo(() => {
-    if (!lancamentos) return [];
-
-    const agrupado: Record<string, GastoPorCategoria> = {};
-
-    lancamentos.filter(l => l.tipo === 'despesa').forEach(l => {
-      const catId = l.categoria_id || 'sem-categoria';
-
-      if (!agrupado[catId]) {
-        agrupado[catId] = {
-          categoria_id: catId,
-          categoria_nome: l.categoria_nome || 'Sem Categoria',
-          categoria_icone: l.categoria_icone || 'circle',
-          total: 0
-        };
-      }
-      agrupado[catId].total += Math.abs(Number(l.valor));
-    });
-
-    return Object.values(agrupado).sort((a, b) => b.total - a.total);
-  }, [lancamentos]);
-
+  const gastos = useMemo(() => processarPorCategoria(lancamentos, 'despesa'), [lancamentos]);
   return { data: gastos, loading, error: null, refetch };
 }
 
 export function useReceitasPorCategoria(periodo: string = 'mes-atual') {
   const { data: lancamentos, loading, refetch } = useLancamentos(periodo);
-
-  const receitas = useMemo(() => {
-    if (!lancamentos) return [];
-
-    const agrupado: Record<string, GastoPorCategoria> = {};
-
-    lancamentos.filter(l => l.tipo === 'receita').forEach(l => {
-      const catId = l.categoria_id || 'sem-categoria';
-
-      if (!agrupado[catId]) {
-        agrupado[catId] = {
-          categoria_id: catId,
-          categoria_nome: l.categoria_nome || 'Sem Categoria',
-          categoria_icone: l.categoria_icone || 'circle',
-          total: 0
-        };
-      }
-      agrupado[catId].total += Math.abs(Number(l.valor));
-    });
-
-    return Object.values(agrupado).sort((a, b) => b.total - a.total);
-  }, [lancamentos]);
-
+  const receitas = useMemo(() => processarPorCategoria(lancamentos, 'receita'), [lancamentos]);
   return { data: receitas, loading, error: null, refetch };
 }
 
@@ -280,16 +246,12 @@ export function useGastosCartoes(periodo: string = 'mes-atual') {
 
   const gastos = useMemo(() => {
     if (!lancamentos) return [];
-
     const agrupado: Record<string, any> = {};
 
     lancamentos.filter(l => l.tipo === 'despesa' && l.forma_pagamento === 'Cartão' && l.cartao_id).forEach(l => {
       const cartaoId = l.cartao_id!;
       if (!agrupado[cartaoId]) {
-        agrupado[cartaoId] = {
-          cartao_id: cartaoId,
-          total: 0
-        };
+        agrupado[cartaoId] = { cartao_id: cartaoId, total: 0 };
       }
       agrupado[cartaoId].total += Math.abs(Number(l.valor));
     });
