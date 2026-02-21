@@ -75,6 +75,7 @@ export function useSyncLancamentosFixos() {
                             forma_pagamento: 'Pix', // Padrão para fixos automáticos
                             status: 'pago',
                             competencia: dataIteracaoStr.substring(0, 7),
+                            sync_id: `${fixo.id}:${dataIteracaoStr}` // ID único para evitar duplicação
                         });
                     }
 
@@ -82,21 +83,14 @@ export function useSyncLancamentosFixos() {
                 }
 
                 if (lancamentosParaCriar.length > 0) {
-                    // Antes de inserir, vamos fazer um último check para ver se o ultimo_processamento não mudou
-                    // (previne race conditions entre abas/instâncias)
-                    const { data: fixoAtualizado } = await supabase
-                        .from('lancamentos_fixos')
-                        .select('ultimo_processamento')
-                        .eq('id', fixo.id)
-                        .single();
-
-                    if (fixoAtualizado?.ultimo_processamento === hojeStr) {
-                        continue;
-                    }
-
+                    // Usamos upsert com ignoreDuplicates para garantir que não criamos duplicatas
+                    // mesmo se o sync rodar em paralelo em abas diferentes
                     const { error: insertError } = await supabase
                         .from('lancamentos')
-                        .insert(lancamentosParaCriar);
+                        .upsert(lancamentosParaCriar, {
+                            onConflict: 'sync_id',
+                            ignoreDuplicates: true
+                        });
 
                     if (insertError) {
                         console.error(`Erro ao inserir lançamentos para ${fixo.nome}:`, insertError);
@@ -104,7 +98,7 @@ export function useSyncLancamentosFixos() {
                     }
                 }
 
-                // Atualiza o último processamento
+                // Atualiza o último processamento para marcar que hoje foi verificado
                 await supabase
                     .from('lancamentos_fixos')
                     .update({ ultimo_processamento: hojeStr })
